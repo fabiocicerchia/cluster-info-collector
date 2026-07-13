@@ -1,0 +1,11 @@
+# SHA-pinned GitHub Actions push some lines past 80 cols; allow 120.
+extends: default
+rules:
+  line-length:
+    max: 120
+  document-start: disable
+  comments:
+    min-spaces-from-content: 1
+  # GitHub Actions `on:` is a valid key, not a boolean.
+  truthy:
+    check-keys: false

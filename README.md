@@ -1,0 +1,68 @@
+# cluster-info-collector
+
+[![CI](https://github.com/fabiocicerchia/cluster-info-collector/actions/workflows/ci.yml/badge.svg)](https://github.com/fabiocicerchia/cluster-info-collector/actions/workflows/ci.yml)
+[![Security](https://github.com/fabiocicerchia/cluster-info-collector/actions/workflows/security.yml/badge.svg)](https://github.com/fabiocicerchia/cluster-info-collector/actions/workflows/security.yml)
+[![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/fabiocicerchia/cluster-info-collector/badge)](https://securityscorecards.dev/viewer/?uri=github.com/fabiocicerchia/cluster-info-collector)
+[![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
+
+A **support-bundle collector** for incident snapshots: nodes, events,
+resource dumps, `describe`s, per-container logs (current + previous crash),
+`kubectl top`, all tarred with a UTC timestamp — optionally shipped straight
+to S3. Secret **names** are listed; secret **data is never collected**.
+
+When production is on fire, nobody remembers the fifteen kubectl commands.
+This is the one command.
+
+## Usage
+
+During an incident (RBAC included in the manifest):
+
+```sh
+kubectl apply -f manifests/job.yaml
+kubectl logs -f job/cluster-info-collector
+```
+
+Scoped + shipped to S3 from your laptop:
+
+```sh
+docker run --rm -v ~/.kube:/home/collector/.kube:ro \
+  -e BUNDLE_S3_URI=s3://incidents/2026-07-10-api-outage/ \
+  fabiocicerchia/cluster-info-collector payments checkout
+```
+
+## Configuration
+
+| Variable | Default | Purpose |
+|---|---|---|
+| `NAMESPACES` / args | all | namespaces to collect |
+| `LOG_TAIL_LINES` | `2000` | log lines per container |
+| `INCLUDE_PREVIOUS` | `true` | crashed-container logs |
+| `OUTPUT_DIR` | `/tmp` | bundle destination |
+| `BUNDLE_S3_URI` | – | upload target |
+
+## Status & roadmap
+
+- [x] Cluster + namespace collection, previous logs, S3 upload
+- [ ] Size budget with smart truncation (biggest-logs-first)
+- [ ] Redaction pass for env vars matching secret-like names
+- [ ] `--since` flag for time-boxed collection
+
+## Development
+
+`make setup` (git hooks) then `make build` / `make lint` / `make test` /
+`make release`. Full docs live in [`docs/`](docs/); runnable examples in
+[`examples/`](examples/).
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md). By participating you agree to the
+[Code of Conduct](CODE_OF_CONDUCT.md).
+
+## Security
+
+Found a vulnerability? See [SECURITY.md](SECURITY.md) — please don't open a
+public issue.
+
+## License
+
+[Apache 2.0](LICENSE) © 2026 Fabio Cicerchia.

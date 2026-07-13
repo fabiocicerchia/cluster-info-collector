@@ -1,0 +1,65 @@
+#!/usr/bin/env bash
+# collect [namespace ...] — gather an incident support bundle.
+#
+#   NAMESPACES        space-separated namespaces (default: all namespaces)
+#   LOG_TAIL_LINES    log lines per container            (default 2000)
+#   INCLUDE_PREVIOUS  previous-container logs too        (default true)
+#   REDACT_SECRETS    dump secret names only, no data    (default true, keep it)
+#   OUTPUT_DIR        where the tarball lands            (default /tmp)
+#   BUNDLE_S3_URI     optional s3://bucket/prefix upload
+set -euo pipefail
+
+NAMESPACES="${*:-${NAMESPACES:-}}"
+LOG_TAIL_LINES="${LOG_TAIL_LINES:-2000}"
+INCLUDE_PREVIOUS="${INCLUDE_PREVIOUS:-true}"
+OUTPUT_DIR="${OUTPUT_DIR:-/tmp}"
+STAMP="$(date -u +%Y%m%dT%H%M%SZ)"
+WORK="$(mktemp -d)/bundle-${STAMP}"
+mkdir -p "$WORK"
+
+log() { echo "collect: $*" >&2; }
+
+log "cluster-level snapshot"
+kubectl version -o yaml               > "$WORK/version.yaml"        2>&1 || true
+kubectl get nodes -o wide             > "$WORK/nodes.txt"           2>&1 || true
+kubectl describe nodes                > "$WORK/nodes-describe.txt"  2>&1 || true
+kubectl get events -A --sort-by=.lastTimestamp > "$WORK/events.txt" 2>&1 || true
+kubectl top nodes                     > "$WORK/top-nodes.txt"       2>&1 || true
+kubectl get pods -A -o wide           > "$WORK/pods-all.txt"        2>&1 || true
+kubectl api-resources                 > "$WORK/api-resources.txt"   2>&1 || true
+
+if [[ -z "$NAMESPACES" ]]; then
+  NAMESPACES="$(kubectl get ns -o jsonpath='{.items[*].metadata.name}')"
+fi
+
+for NS in $NAMESPACES; do
+  NSDIR="$WORK/namespaces/$NS"
+  mkdir -p "$NSDIR/logs"
+  log "namespace $NS"
+  kubectl -n "$NS" get all,cm,ingress,pvc,networkpolicy -o wide > "$NSDIR/resources.txt" 2>&1 || true
+  kubectl -n "$NS" get all -o yaml       > "$NSDIR/resources.yaml" 2>&1 || true
+  kubectl -n "$NS" get secrets           > "$NSDIR/secret-names.txt" 2>&1 || true   # names only, never data
+  kubectl -n "$NS" get events --sort-by=.lastTimestamp > "$NSDIR/events.txt" 2>&1 || true
+  kubectl -n "$NS" top pods              > "$NSDIR/top-pods.txt" 2>&1 || true
+
+  for POD in $(kubectl -n "$NS" get pods -o jsonpath='{.items[*].metadata.name}' 2>/dev/null); do
+    kubectl -n "$NS" describe pod "$POD" > "$NSDIR/logs/${POD}.describe.txt" 2>&1 || true
+    for C in $(kubectl -n "$NS" get pod "$POD" -o jsonpath='{.spec.containers[*].name}' 2>/dev/null); do
+      kubectl -n "$NS" logs "$POD" -c "$C" --tail="$LOG_TAIL_LINES" \
+        > "$NSDIR/logs/${POD}_${C}.log" 2>&1 || true
+      if [[ "$INCLUDE_PREVIOUS" == "true" ]]; then
+        kubectl -n "$NS" logs "$POD" -c "$C" --previous --tail="$LOG_TAIL_LINES" \
+          > "$NSDIR/logs/${POD}_${C}.previous.log" 2>/dev/null || rm -f "$NSDIR/logs/${POD}_${C}.previous.log"
+      fi
+    done
+  done
+done
+
+BUNDLE="$OUTPUT_DIR/cluster-bundle-${STAMP}.tar.gz"
+tar -czf "$BUNDLE" -C "$(dirname "$WORK")" "$(basename "$WORK")"
+log "bundle written: $BUNDLE ($(du -h "$BUNDLE" | cut -f1))"
+
+if [[ -n "${BUNDLE_S3_URI:-}" ]]; then
+  aws s3 cp "$BUNDLE" "${BUNDLE_S3_URI%/}/$(basename "$BUNDLE")"
+  log "uploaded to ${BUNDLE_S3_URI%/}/$(basename "$BUNDLE")"
+fi

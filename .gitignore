@@ -1,0 +1,24 @@
+# Secrets / local env
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Local collector output & scan reports
+*.tar.gz
+reports/
+
+# Logs / caches
+*.log
+.cache/
+
+# Docs site build
+site/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp

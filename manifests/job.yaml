@@ -1,0 +1,134 @@
+# One-shot incident snapshot: `kubectl apply -f job.yaml` during a fire,
+# then `kubectl cp` the bundle or set BUNDLE_S3_URI.
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: cluster-info-collector
+---
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: cluster-info-collector
+  namespace: cluster-info-collector
+spec:
+  hard:
+    requests.cpu: "1"
+    requests.memory: 1Gi
+    limits.cpu: "2"
+    limits.memory: 2Gi
+---
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: cluster-info-collector
+  namespace: cluster-info-collector
+spec:
+  limits:
+    - type: Container
+      default:
+        cpu: 500m
+        memory: 512Mi
+      defaultRequest:
+        cpu: 100m
+        memory: 128Mi
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: cluster-info-collector
+  namespace: cluster-info-collector
+spec:
+  ttlSecondsAfterFinished: 3600
+  template:
+    metadata:
+      annotations:
+        container.apparmor.security.beta.kubernetes.io/collect: runtime/default
+    spec:
+      serviceAccountName: cluster-info-collector
+      restartPolicy: Never
+      # The collector talks to the API server, so it needs its token mounted.
+      automountServiceAccountToken: true
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+        runAsGroup: 10001
+        fsGroup: 10001
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: collect
+          # Pin a released tag; bump on upgrade. Swap for an @sha256 digest
+          # if your admission policy requires it.
+          image: fabiocicerchia/cluster-info-collector:0.1.0
+          imagePullPolicy: Always
+          env:
+            - name: NAMESPACES
+              value: ""            # empty = all
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp     # bundle is built here (read-only rootfs)
+      volumes:
+        - name: tmp
+          emptyDir: {}
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: cluster-info-collector
+  namespace: cluster-info-collector
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: cluster-info-collector-read
+# Scoped to what `collect` reads. Add new kinds here if the script grows.
+rules:
+  - apiGroups: [""]
+    resources:
+      - pods
+      - pods/log
+      - services
+      - events
+      - nodes
+      - namespaces
+      - configmaps
+      - persistentvolumeclaims
+      - replicationcontrollers
+    verbs: [get, list]
+  - apiGroups: ["apps"]
+    resources: [deployments, replicasets, statefulsets, daemonsets]
+    verbs: [get, list]
+  - apiGroups: ["batch"]
+    resources: [jobs, cronjobs]
+    verbs: [get, list]
+  - apiGroups: ["networking.k8s.io"]
+    resources: [ingresses, networkpolicies]
+    verbs: [get, list]
+  - apiGroups: ["metrics.k8s.io"]
+    resources: [nodes, pods]
+    verbs: [get, list]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: cluster-info-collector-read
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-info-collector-read
+subjects:
+  - kind: ServiceAccount
+    name: cluster-info-collector
+    namespace: cluster-info-collector
