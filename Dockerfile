@@ -2,7 +2,7 @@
 # dumps) for incident snapshots. Run it once, get a tarball of evidence.
 ARG KUBECTL_VERSION=1.33.2
 
-FROM alpine:3.22@sha256:14358309a308569c32bdc37e2e0e9694be33a9d99e68afb0f5ff33cc1f695dce AS fetch
+FROM alpine:3.24@sha256:28bd5fe8b56d1bd048e5babf5b10710ebe0bae67db86916198a6eec434943f8b AS fetch
 ARG KUBECTL_VERSION
 ARG TARGETOS=linux
 ARG TARGETARCH=amd64
@@ -11,7 +11,7 @@ RUN apk add --no-cache curl=8.14.1-r2 ca-certificates=20260611-r0
 RUN curl -fsSLo /kubectl "https://dl.k8s.io/release/v${KUBECTL_VERSION}/bin/${TARGETOS}/${TARGETARCH}/kubectl" \
  && chmod 0755 /kubectl
 
-FROM alpine:3.22@sha256:14358309a308569c32bdc37e2e0e9694be33a9d99e68afb0f5ff33cc1f695dce
+FROM alpine:3.24@sha256:28bd5fe8b56d1bd048e5babf5b10710ebe0bae67db86916198a6eec434943f8b
 LABEL org.opencontainers.image.title="cluster-info-collector" \
       org.opencontainers.image.description="Support-bundle collector: logs, events, resource dumps for incident snapshots" \
       org.opencontainers.image.licenses="Apache-2.0" \
