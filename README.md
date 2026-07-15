@@ -15,6 +15,14 @@ to S3. Secret **names** are listed; secret **data is never collected**.
 When production is on fire, nobody remembers the fifteen kubectl commands.
 This is the one command.
 
+## Install
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/fabiocicerchia/cluster-info-collector/main/install.sh | bash
+```
+
+Or pull the image directly: `docker pull ghcr.io/fabiocicerchia/cluster-info-collector:latest`.
+
 ## Usage
 
 During an incident (RBAC included in the manifest):
