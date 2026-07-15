@@ -6,6 +6,8 @@
 #   INCLUDE_PREVIOUS  previous-container logs too        (default true)
 #   REDACT_SECRETS    dump secret names only, no data    (default true, keep it)
 #   REDACT_ENV        redact secret-like env var values in describe/resource dumps (default true)
+#   SINCE             only fetch logs newer than this (e.g. 1h, 30m)  (default: all)
+#   MAX_BUNDLE_MB     truncate biggest logs first past this size      (default 0 = unlimited)
 #   OUTPUT_DIR        where the tarball lands            (default /tmp)
 #   BUNDLE_S3_URI     optional s3://bucket/prefix upload
 set -euo pipefail
@@ -19,7 +21,11 @@ NAMESPACES="${*:-${NAMESPACES:-}}"
 LOG_TAIL_LINES="${LOG_TAIL_LINES:-2000}"
 INCLUDE_PREVIOUS="${INCLUDE_PREVIOUS:-true}"
 REDACT_ENV="${REDACT_ENV:-true}"
+SINCE="${SINCE:-}"
+MAX_BUNDLE_MB="${MAX_BUNDLE_MB:-0}"
 OUTPUT_DIR="${OUTPUT_DIR:-/tmp}"
+LOG_SINCE_ARGS=()
+[[ -n "$SINCE" ]] && LOG_SINCE_ARGS+=(--since="$SINCE")
 STAMP="$(date -u +%Y%m%dT%H%M%SZ)"
 WORK="$(mktemp -d)/bundle-${STAMP}"
 mkdir -p "$WORK"
@@ -58,15 +64,20 @@ for NS in $NAMESPACES; do
       kubectl -n "$NS" describe pod "$POD" > "$NSDIR/logs/${POD}.describe.txt" 2>&1 || true
     fi
     for C in $(kubectl -n "$NS" get pod "$POD" -o jsonpath='{.spec.containers[*].name}' 2>/dev/null); do
-      kubectl -n "$NS" logs "$POD" -c "$C" --tail="$LOG_TAIL_LINES" \
+      kubectl -n "$NS" logs "$POD" -c "$C" --tail="$LOG_TAIL_LINES" "${LOG_SINCE_ARGS[@]}" \
         > "$NSDIR/logs/${POD}_${C}.log" 2>&1 || true
       if [[ "$INCLUDE_PREVIOUS" == "true" ]]; then
-        kubectl -n "$NS" logs "$POD" -c "$C" --previous --tail="$LOG_TAIL_LINES" \
+        kubectl -n "$NS" logs "$POD" -c "$C" --previous --tail="$LOG_TAIL_LINES" "${LOG_SINCE_ARGS[@]}" \
           > "$NSDIR/logs/${POD}_${C}.previous.log" 2>/dev/null || rm -f "$NSDIR/logs/${POD}_${C}.previous.log"
       fi
     done
   done
 done
+
+if [[ "$MAX_BUNDLE_MB" -gt 0 ]]; then
+  log "enforcing ${MAX_BUNDLE_MB}MB size budget (biggest logs truncated first)"
+  enforce_size_budget "$WORK" "$MAX_BUNDLE_MB"
+fi
 
 BUNDLE="$OUTPUT_DIR/cluster-bundle-${STAMP}.tar.gz"
 tar -czf "$BUNDLE" -C "$(dirname "$WORK")" "$(basename "$WORK")"

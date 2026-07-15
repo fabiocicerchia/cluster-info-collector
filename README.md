@@ -48,15 +48,18 @@ docker run --rm -v ~/.kube:/home/collector/.kube:ro \
 | `LOG_TAIL_LINES` | `2000` | log lines per container |
 | `INCLUDE_PREVIOUS` | `true` | crashed-container logs |
 | `REDACT_ENV` | `true` | redact secret-like env var values in describe/resource dumps |
+| `SINCE` | – | only fetch logs newer than this (`kubectl logs --since`, e.g. `1h`, `30m`) |
+| `MAX_BUNDLE_MB` | `0` (unlimited) | truncate the biggest `*.log` files first until the bundle fits |
 | `OUTPUT_DIR` | `/tmp` | bundle destination |
 | `BUNDLE_S3_URI` | – | upload target |
 
 ## Status & roadmap
 
 - [x] Cluster + namespace collection, previous logs, S3 upload
-- [ ] Size budget with smart truncation (biggest-logs-first)
+- [x] Size budget with smart truncation (biggest-logs-first)
 - [x] Redaction pass for env vars matching secret-like names
-- [ ] `--since` flag for time-boxed collection
+- [x] `--since` flag for time-boxed collection (exposed as `SINCE`, matching
+      this script's env-var-only interface — see `MAX_BUNDLE_MB` too)
 
 ## Development
 
