@@ -2,7 +2,7 @@ IMAGE     ?= fabiocicerchia/cluster-info-collector
 VERSION   ?= 0.1.0
 PLATFORMS ?= linux/amd64,linux/arm64
 
-.PHONY: help setup build lint test push release
+.PHONY: help setup build lint test test-unit push release
 
 help: ## Show this help
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | \
@@ -17,10 +17,13 @@ build: ## Build the image locally
 
 lint: ## hadolint + shellcheck
 	docker run --rm -i hadolint/hadolint < Dockerfile
-	shellcheck collect test.sh
+	shellcheck collect lib.sh test.sh test-unit.sh
 
-test: build ## Build + smoke test
+test: build test-unit ## Build + smoke test
 	./test.sh $(IMAGE):$(VERSION)
+
+test-unit: ## Unit tests for lib.sh, no docker/kubectl required
+	./test-unit.sh
 
 push: build ## Push single-arch image
 	docker push $(IMAGE):$(VERSION)

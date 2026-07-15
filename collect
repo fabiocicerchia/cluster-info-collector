@@ -5,19 +5,24 @@
 #   LOG_TAIL_LINES    log lines per container            (default 2000)
 #   INCLUDE_PREVIOUS  previous-container logs too        (default true)
 #   REDACT_SECRETS    dump secret names only, no data    (default true, keep it)
+#   REDACT_ENV        redact secret-like env var values in describe/resource dumps (default true)
 #   OUTPUT_DIR        where the tarball lands            (default /tmp)
 #   BUNDLE_S3_URI     optional s3://bucket/prefix upload
 set -euo pipefail
 
+log() { echo "collect: $*" >&2; }
+
+# shellcheck source=lib.sh
+. "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/lib.sh"
+
 NAMESPACES="${*:-${NAMESPACES:-}}"
 LOG_TAIL_LINES="${LOG_TAIL_LINES:-2000}"
 INCLUDE_PREVIOUS="${INCLUDE_PREVIOUS:-true}"
+REDACT_ENV="${REDACT_ENV:-true}"
 OUTPUT_DIR="${OUTPUT_DIR:-/tmp}"
 STAMP="$(date -u +%Y%m%dT%H%M%SZ)"
 WORK="$(mktemp -d)/bundle-${STAMP}"
 mkdir -p "$WORK"
-
-log() { echo "collect: $*" >&2; }
 
 log "cluster-level snapshot"
 kubectl version -o yaml               > "$WORK/version.yaml"        2>&1 || true
@@ -37,13 +42,21 @@ for NS in $NAMESPACES; do
   mkdir -p "$NSDIR/logs"
   log "namespace $NS"
   kubectl -n "$NS" get all,cm,ingress,pvc,networkpolicy -o wide > "$NSDIR/resources.txt" 2>&1 || true
-  kubectl -n "$NS" get all -o yaml       > "$NSDIR/resources.yaml" 2>&1 || true
+  if [[ "$REDACT_ENV" == "true" ]]; then
+    kubectl -n "$NS" get all -o yaml 2>&1 | redact_stream > "$NSDIR/resources.yaml" || true
+  else
+    kubectl -n "$NS" get all -o yaml > "$NSDIR/resources.yaml" 2>&1 || true
+  fi
   kubectl -n "$NS" get secrets           > "$NSDIR/secret-names.txt" 2>&1 || true   # names only, never data
   kubectl -n "$NS" get events --sort-by=.lastTimestamp > "$NSDIR/events.txt" 2>&1 || true
   kubectl -n "$NS" top pods              > "$NSDIR/top-pods.txt" 2>&1 || true
 
   for POD in $(kubectl -n "$NS" get pods -o jsonpath='{.items[*].metadata.name}' 2>/dev/null); do
-    kubectl -n "$NS" describe pod "$POD" > "$NSDIR/logs/${POD}.describe.txt" 2>&1 || true
+    if [[ "$REDACT_ENV" == "true" ]]; then
+      kubectl -n "$NS" describe pod "$POD" 2>&1 | redact_stream > "$NSDIR/logs/${POD}.describe.txt" || true
+    else
+      kubectl -n "$NS" describe pod "$POD" > "$NSDIR/logs/${POD}.describe.txt" 2>&1 || true
+    fi
     for C in $(kubectl -n "$NS" get pod "$POD" -o jsonpath='{.spec.containers[*].name}' 2>/dev/null); do
       kubectl -n "$NS" logs "$POD" -c "$C" --tail="$LOG_TAIL_LINES" \
         > "$NSDIR/logs/${POD}_${C}.log" 2>&1 || true

@@ -47,6 +47,7 @@ docker run --rm -v ~/.kube:/home/collector/.kube:ro \
 | `NAMESPACES` / args | all | namespaces to collect |
 | `LOG_TAIL_LINES` | `2000` | log lines per container |
 | `INCLUDE_PREVIOUS` | `true` | crashed-container logs |
+| `REDACT_ENV` | `true` | redact secret-like env var values in describe/resource dumps |
 | `OUTPUT_DIR` | `/tmp` | bundle destination |
 | `BUNDLE_S3_URI` | – | upload target |
 
@@ -54,7 +55,7 @@ docker run --rm -v ~/.kube:/home/collector/.kube:ro \
 
 - [x] Cluster + namespace collection, previous logs, S3 upload
 - [ ] Size budget with smart truncation (biggest-logs-first)
-- [ ] Redaction pass for env vars matching secret-like names
+- [x] Redaction pass for env vars matching secret-like names
 - [ ] `--since` flag for time-boxed collection
 
 ## Development
