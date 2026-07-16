@@ -53,14 +53,6 @@ docker run --rm -v ~/.kube:/home/collector/.kube:ro \
 | `OUTPUT_DIR` | `/tmp` | bundle destination |
 | `BUNDLE_S3_URI` | – | upload target |
 
-## Status & roadmap
-
-- [x] Cluster + namespace collection, previous logs, S3 upload
-- [x] Size budget with smart truncation (biggest-logs-first)
-- [x] Redaction pass for env vars matching secret-like names
-- [x] `--since` flag for time-boxed collection (exposed as `SINCE`, matching
-      this script's env-var-only interface — see `MAX_BUNDLE_MB` too)
-
 ## Development
 
 `make setup` (git hooks) then `make build` / `make lint` / `make test` /
