@@ -17,7 +17,7 @@ build: ## Build the image locally
 
 lint: ## hadolint + shellcheck
 	docker run --rm -i hadolint/hadolint < Dockerfile
-	shellcheck collect lib.sh test.sh test-unit.sh
+	shellcheck collect lib.sh docker-collect.sh test.sh test-unit.sh
 
 test: build test-unit ## Build + smoke test
 	./test.sh $(IMAGE):$(VERSION)

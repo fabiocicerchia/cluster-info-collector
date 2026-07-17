@@ -32,7 +32,20 @@ kubectl apply -f manifests/job.yaml
 kubectl logs -f job/cluster-info-collector
 ```
 
-Scoped + shipped to S3 from your laptop:
+Scoped + shipped to S3 from your laptop — `docker-collect.sh` wraps
+`docker run` against your current kubectl context, working out the fiddly
+bits (kubeconfig permissions, `--network` for local clusters like minikube/
+kind/k3d, getting the bundle back out) for you:
+
+```sh
+./docker-collect.sh --s3 s3://incidents/2026-07-10-api-outage/ payments checkout
+```
+
+Bundle lands in `./out` by default; add `--output DIR` to change that, or
+`--dry-run` to print the `docker run` command without executing it. See
+`./docker-collect.sh --help` for all options.
+
+Equivalent by hand, for the manual/no-wrapper form:
 
 ```sh
 docker run --rm -v ~/.kube:/home/collector/.kube:ro \
