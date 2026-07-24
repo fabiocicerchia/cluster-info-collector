@@ -28,7 +28,7 @@ jobs:
 
       # pre-commit runs the hooks defined in .pre-commit-config.yaml
       # (shellcheck, gitleaks, whitespace, …).
-      - uses: actions/setup-python@v6
+      - uses: actions/setup-python@v6.3.0
         with:
           python-version: "3.x"
       - name: pre-commit
