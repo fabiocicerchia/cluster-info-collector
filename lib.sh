@@ -34,6 +34,9 @@ redact_stream() {
 # Total size in bytes of every file under dir (recursive).
 dir_size_bytes() {
   local dir="$1" total=0 sz f
+  # shellcheck disable=SC2044 # every path here is under $WORK, built from k8s
+  # object names (RFC 1123: no spaces/newlines/globs possible), so the usual
+  # word-splitting concern with `for ... in $(find ...)` doesn't apply.
   for f in $(find "$dir" -type f 2>/dev/null); do
     sz=$(wc -c <"$f" 2>/dev/null) || sz=0
     total=$((total + sz))
@@ -52,6 +55,7 @@ enforce_size_budget() {
   size=$(dir_size_bytes "$dir")
   ((size <= max_bytes)) && return 0
   for f in $(
+    # shellcheck disable=SC2044 # same k8s-object-naming guarantee as above
     for lf in $(find "$dir" -type f -path '*/logs/*.log' 2>/dev/null); do
       printf '%s %s\n' "$(wc -c <"$lf")" "$lf"
     done | sort -rn | awk '{print $2}'
