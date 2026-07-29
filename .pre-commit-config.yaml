@@ -6,6 +6,7 @@ repos:
       - id: trailing-whitespace
       - id: end-of-file-fixer
       - id: check-yaml
+        args: [--allow-multiple-documents]
       - id: check-json
       - id: check-added-large-files
       - id: check-merge-conflict
@@ -15,6 +16,7 @@ repos:
     rev: v0.10.0
     hooks:
       - id: shellcheck
+        args: [-x]
         files: ^(collect|test\.sh)$
 
   - repo: https://github.com/gitleaks/gitleaks
