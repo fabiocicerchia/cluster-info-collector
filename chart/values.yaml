@@ -1,0 +1,96 @@
+kind: CronJob
+
+image:
+  repository: ghcr.io/fabiocicerchia/cluster-info-collector
+  tag: ""
+  pullPolicy: IfNotPresent
+imagePullSecrets: []
+
+nameOverride: ""
+fullnameOverride: ""
+
+command: []
+args: []
+
+env:
+  OUTPUT_DIR: /data
+  NAMESPACES: ""          # empty => all namespaces
+  LOG_TAIL_LINES: "500"
+  MAX_BUNDLE_MB: "100"
+envFrom: []
+
+config:
+  mountPath: /etc/cluster-info-collector
+  files: {}
+
+cron:
+  schedule: "0 */6 * * *"
+  suspend: false
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 1
+  restartPolicy: OnFailure
+  backoffLimit: 2
+
+service:
+  enabled: false
+  type: ClusterIP
+  port: 8080
+  targetPort: 8080
+  annotations: {}
+
+ingress:
+  enabled: false
+  className: ""
+  annotations: {}
+  host: ""
+  path: /
+  pathType: Prefix
+  tls: []
+
+livenessProbe: {}
+readinessProbe: {}
+
+resources:
+  requests: {cpu: 100m, memory: 256Mi}
+  limits: {memory: 1Gi}
+
+# Bundles land here. Use existingClaim (RWX) if you collect them elsewhere.
+persistence:
+  enabled: true
+  mountPath: /data
+  existingClaim: ""
+  size: 5Gi
+  storageClass: ""
+  accessModes: [ReadWriteOnce]
+
+serviceAccount:
+  create: true
+  name: ""
+  annotations: {}
+
+rbac:
+  create: true
+  clusterWide: true
+  rules:
+    - apiGroups: ["*"]
+      resources: ["*"]
+      verbs: ["get", "list", "watch"]
+
+podSecurityContext:
+  runAsNonRoot: true
+  seccompProfile: {type: RuntimeDefault}
+
+securityContext:
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: true
+  capabilities: {drop: ["ALL"]}
+
+extraVolumes: []
+extraVolumeMounts: []
+
+podAnnotations: {}
+podLabels: {}
+nodeSelector: {}
+tolerations: []
+affinity: {}
