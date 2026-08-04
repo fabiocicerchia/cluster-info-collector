@@ -22,6 +22,7 @@ LABEL org.opencontainers.image.title="cluster-info-collector" \
       org.opencontainers.image.source="https://github.com/fabiocicerchia/cluster-info-collector"
 RUN apk add --no-cache bash=5.3.9-r1 tar=1.35-r5 gzip=1.14-r2 aws-cli=2.34.63-r0 ca-certificates=20260611-r0 \
  && adduser -D -u 10001 collector
+COPY NOTICE /NOTICE
 COPY --from=fetch /kubectl /usr/local/bin/kubectl
 COPY collect lib.sh /usr/local/bin/
 USER 10001
