@@ -1,0 +1,44 @@
+cluster-info-collector
+Copyright 2026 Fabio Cicerchia
+
+This product includes software developed by
+Fabio Cicerchia (https://github.com/fabiocicerchia).
+
+The Apache-2.0 license on this repository covers the packaging only: the
+Dockerfile and the collect/lib.sh scripts. The published container image
+redistributes the following third-party software, each under its own
+license:
+
+  kubectl 1.33.2  Apache-2.0  https://github.com/kubernetes/kubernetes
+  aws-cli v2      Apache-2.0  https://github.com/aws/aws-cli
+                  (additionally subject to the AWS Service Terms)
+
+--------------------------------------------------------------------
+Kubernetes (kubectl)
+Copyright 2014-2026 The Kubernetes Authors.
+Licensed under the Apache License, Version 2.0.
+https://github.com/kubernetes/kubernetes/blob/master/LICENSE
+Upstream NOTICE: https://github.com/kubernetes/kubernetes/blob/master/NOTICE
+
+AWS Command Line Interface
+Copyright 2012-2026 Amazon.com, Inc. or its affiliates.
+Licensed under the Apache License, Version 2.0.
+https://github.com/aws/aws-cli/blob/v2/LICENSE.txt
+Upstream NOTICE: https://github.com/aws/aws-cli/blob/v2/NOTICE.txt
+--------------------------------------------------------------------
+
+Installed at runtime from Alpine Linux, each under its own license:
+
+  bash   GPL-3.0-or-later  https://git.savannah.gnu.org/cgit/bash.git
+  tar    GPL-3.0-or-later  https://www.gnu.org/software/tar/
+  gzip   GPL-3.0-or-later  https://www.gnu.org/software/gzip/
+
+CORRESPONDING SOURCE (GPL-3.0 section 6)
+
+Those three are unmodified Alpine Linux packages. Alpine publishes the
+corresponding source and build recipes at
+https://gitlab.alpinelinux.org/alpine/aports — run `apk info -a bash`
+inside the image to resolve the exact version.
+
+The base image is Alpine Linux; its packages carry their own licenses
+(musl MIT, busybox GPL-2.0-only).
