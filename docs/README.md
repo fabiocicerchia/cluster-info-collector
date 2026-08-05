@@ -1,6 +1,4 @@
 # Documentation
 
-- [Getting Started](getting-started.md) — run your first collection.
-- [Architecture](architecture.md) — what the bundle contains and how it's built.
-
-Add pages here as the project grows.
+- [Architecture](architecture.md) — high-level design and components.
+- [Getting Started](getting-started.md) — setup, first run and day-to-day use.
