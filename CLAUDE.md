@@ -19,7 +19,31 @@ as a minimal Alpine image; runs as a one-shot Kubernetes Job
 # test:  make test             # build + ./test.sh smoke test
 # lint:  make lint             # hadolint + shellcheck
 # run:   ./collect [namespace ...]   # or: docker run … cluster-info-collector
+make help      # Show this help
+make setup     # Install the pre-commit hook
+make build     # Build the image locally
+make lint      # hadolint + shellcheck
+make test      # Build + smoke test
+make test-unit # Unit tests for lib.sh, no docker/kubectl required
+make push      # Push single-arch image
+make release   # Build & push multi-arch image + latest
 ```
+
+## Tooling
+
+Shared config — the GitHub workflows, `.pre-commit-config.yaml`,
+`.editorconfig`, `.hadolint.yaml`, `SECURITY.md` — comes from
+[repo-skeleton](https://github.com/fabiocicerchia/repo-skeleton). Edit it
+there, not here; a local edit is drift and the next sync overwrites it.
+`check-drift.sh` in that repo reports what has diverged.
+
+- `make setup` installs the pre-commit hook, and that is the whole of it.
+  Don't add a `.githooks/` directory: `core.hooksPath` replaces `.git/hooks/`
+  wholesale, so setting it silently stops every pre-commit hook from running.
+- Hooks are pinned by commit SHA with the tag in a trailing comment. A tag can
+  be moved, a SHA cannot.
+- CI runs this same `.pre-commit-config.yaml` through `pre-commit/action`, so
+  what passes locally is what gates the pull request.
 
 ## Conventions
 
