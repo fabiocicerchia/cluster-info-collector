@@ -3,6 +3,7 @@
 [![CI](https://github.com/fabiocicerchia/cluster-info-collector/actions/workflows/ci.yml/badge.svg)](https://github.com/fabiocicerchia/cluster-info-collector/actions/workflows/ci.yml)
 [![Security](https://github.com/fabiocicerchia/cluster-info-collector/actions/workflows/security.yml/badge.svg)](https://github.com/fabiocicerchia/cluster-info-collector/actions/workflows/security.yml)
 [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/fabiocicerchia/cluster-info-collector/badge)](https://securityscorecards.dev/viewer/?uri=github.com/fabiocicerchia/cluster-info-collector)
+[![CI carbon](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/fabiocicerchia/cluster-info-collector/gh-pages/badge.json)](.github/workflows/carbon-badge.yml)
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
 [![Release](https://img.shields.io/github/v/release/fabiocicerchia/cluster-info-collector)](https://github.com/fabiocicerchia/cluster-info-collector/releases)
 
