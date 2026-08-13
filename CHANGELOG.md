@@ -4,6 +4,13 @@ All notable changes to this project are documented here. The format is based
 on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.1](https://github.com/fabiocicerchia/cluster-info-collector/compare/v0.2.0...v0.2.1) (2026-08-13)
+
+
+### Bug Fixes
+
+* security and code-quality findings ([#28](https://github.com/fabiocicerchia/cluster-info-collector/issues/28)) ([75581ad](https://github.com/fabiocicerchia/cluster-info-collector/commit/75581ad9827b535fde36b0880c6c54261bd88596))
+
 ## [0.2.0](https://github.com/fabiocicerchia/cluster-info-collector/compare/v0.1.0...v0.2.0) (2026-08-06)
 
 
