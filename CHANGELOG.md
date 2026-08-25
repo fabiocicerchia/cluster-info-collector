@@ -4,6 +4,13 @@ All notable changes to this project are documented here. The format is based
 on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.0](https://github.com/fabiocicerchia/cluster-info-collector/compare/v0.2.1...v0.3.0) (2026-08-25)
+
+
+### Features
+
+* **docs:** build the docs site in Actions and drop Read the Docs ([#33](https://github.com/fabiocicerchia/cluster-info-collector/issues/33)) ([be8d53c](https://github.com/fabiocicerchia/cluster-info-collector/commit/be8d53c6627dac7ec7cff0e35291e9f21e7228ad))
+
 ## [0.2.1](https://github.com/fabiocicerchia/cluster-info-collector/compare/v0.2.0...v0.2.1) (2026-08-13)
 
 
