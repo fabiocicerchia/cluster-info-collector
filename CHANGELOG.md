@@ -4,6 +4,13 @@ All notable changes to this project are documented here. The format is based
 on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.1](https://github.com/fabiocicerchia/cluster-info-collector/compare/v0.3.0...v0.3.1) (2026-08-30)
+
+
+### Bug Fixes
+
+* **chart:** scope the chart's RBAC to what collect reads, and hash-pin the docs toolchain ([#37](https://github.com/fabiocicerchia/cluster-info-collector/issues/37)) ([9d93f2f](https://github.com/fabiocicerchia/cluster-info-collector/commit/9d93f2fbb7a79f0c44e3c84aa18bc731a20b85dd))
+
 ## [0.3.0](https://github.com/fabiocicerchia/cluster-info-collector/compare/v0.2.1...v0.3.0) (2026-08-25)
 
 
