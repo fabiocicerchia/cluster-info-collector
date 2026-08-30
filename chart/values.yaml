@@ -72,10 +72,54 @@ serviceAccount:
 rbac:
   create: true
   clusterWide: true
+  # Scoped to exactly what `collect` reads, mirroring manifests/job.yaml. This
+  # was `apiGroups: ["*"], resources: ["*"]` with get/list/watch, which is
+  # cluster-wide read on everything — secrets included. That contradicts the
+  # one thing this tool promises: secret names are listed, secret data is
+  # never collected. A chart that hands the ServiceAccount every secret in the
+  # cluster makes that promise unverifiable, whatever the script does.
+  #
+  # Add new kinds here and in manifests/job.yaml together if `collect` grows.
   rules:
-    - apiGroups: ["*"]
-      resources: ["*"]
-      verbs: ["get", "list", "watch"]
+    - apiGroups: [""]
+      resources:
+        - pods
+        - pods/log
+        - services
+        - events
+        - nodes
+        - namespaces
+        - configmaps
+        - persistentvolumeclaims
+        - replicationcontrollers
+      verbs: ["get", "list"]
+    - apiGroups: ["apps"]
+      resources: [deployments, replicasets, statefulsets, daemonsets]
+      verbs: ["get", "list"]
+    - apiGroups: ["batch"]
+      resources: [jobs, cronjobs]
+      verbs: ["get", "list"]
+    - apiGroups: ["networking.k8s.io"]
+      resources: [ingresses, networkpolicies]
+      verbs: ["get", "list"]
+    - apiGroups: ["metrics.k8s.io"]
+      resources: [nodes, pods]
+      verbs: ["get", "list"]
+    # Deliberately absent: secrets.
+    #
+    # `collect` runs `kubectl get secrets` for the name list, so without this
+    # rule secret-names.txt records a Forbidden error instead — which is the
+    # graceful degradation every other command here already relies on, and it
+    # is visible in the bundle rather than silent.
+    #
+    # There is no RBAC verb for "names but not data": `list` on secrets returns
+    # whole objects over the API, base64 payload and all. kubectl's table output
+    # merely does not print it. So granting this trades the tool's central
+    # guarantee for one file, and that has to be the operator's decision:
+    #
+    #   - apiGroups: [""]
+    #     resources: [secrets]
+    #     verbs: ["list"]
 
 podSecurityContext:
   runAsNonRoot: true
