@@ -14,6 +14,17 @@ set -euo pipefail
 
 log() { echo "collect: $*" >&2; }
 
+# dump FILE CMD... — run CMD, capturing stdout and stderr into FILE, through
+# redact_stream when REDACT_ENV is on. Never aborts the collection.
+dump() {
+  local out="$1"; shift
+  if [[ "$REDACT_ENV" == "true" ]]; then
+    "$@" 2>&1 | redact_stream > "$out" || true
+  else
+    "$@" > "$out" 2>&1 || true
+  fi
+}
+
 # shellcheck source=lib.sh
 . "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/lib.sh"
 
@@ -48,21 +59,13 @@ for NS in $NAMESPACES; do
   mkdir -p "$NSDIR/logs"
   log "namespace $NS"
   kubectl -n "$NS" get all,cm,ingress,pvc,networkpolicy -o wide > "$NSDIR/resources.txt" 2>&1 || true
-  if [[ "$REDACT_ENV" == "true" ]]; then
-    kubectl -n "$NS" get all -o yaml 2>&1 | redact_stream > "$NSDIR/resources.yaml" || true
-  else
-    kubectl -n "$NS" get all -o yaml > "$NSDIR/resources.yaml" 2>&1 || true
-  fi
+  dump "$NSDIR/resources.yaml" kubectl -n "$NS" get all -o yaml
   kubectl -n "$NS" get secrets           > "$NSDIR/secret-names.txt" 2>&1 || true   # names only, never data
   kubectl -n "$NS" get events --sort-by=.lastTimestamp > "$NSDIR/events.txt" 2>&1 || true
   kubectl -n "$NS" top pods              > "$NSDIR/top-pods.txt" 2>&1 || true
 
   for POD in $(kubectl -n "$NS" get pods -o jsonpath='{.items[*].metadata.name}' 2>/dev/null); do
-    if [[ "$REDACT_ENV" == "true" ]]; then
-      kubectl -n "$NS" describe pod "$POD" 2>&1 | redact_stream > "$NSDIR/logs/${POD}.describe.txt" || true
-    else
-      kubectl -n "$NS" describe pod "$POD" > "$NSDIR/logs/${POD}.describe.txt" 2>&1 || true
-    fi
+    dump "$NSDIR/logs/${POD}.describe.txt" kubectl -n "$NS" describe pod "$POD"
     for C in $(kubectl -n "$NS" get pod "$POD" -o jsonpath='{.spec.containers[*].name}' 2>/dev/null); do
       kubectl -n "$NS" logs "$POD" -c "$C" --tail="$LOG_TAIL_LINES" "${LOG_SINCE_ARGS[@]}" \
         > "$NSDIR/logs/${POD}_${C}.log" 2>&1 || true
