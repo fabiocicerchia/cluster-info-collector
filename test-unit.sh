@@ -79,6 +79,22 @@ export FAKE_SERVER=https://203.0.113.5:6443
 out=$(PATH="$fakebin:$PATH" ./docker-collect.sh --dry-run --kubeconfig "$fakekube" 2>&1)
 echo "$out" | grep -q -- "--network" && fail "expected no --network for a non-matching server, got: $out"
 
+# docker-collect.sh exit codes: each refusal has its own sysexits code, so a
+# caller can tell a typo from a kubeconfig that isn't there.
+rc=0; PATH="$fakebin:$PATH" ./docker-collect.sh --bogus-flag >/dev/null 2>&1 || rc=$?
+[[ "$rc" -eq 64 ]] || fail "expected EX_USAGE 64 for an unknown option, got $rc"
+
+rc=0; PATH="$fakebin:$PATH" ./docker-collect.sh --dry-run --kubeconfig /nonexistent >/dev/null 2>&1 || rc=$?
+[[ "$rc" -eq 66 ]] || fail "expected EX_NOINPUT 66 for a missing kubeconfig, got $rc"
+
+# bash stays on PATH here on purpose: an empty PATH makes `env bash` itself
+# exit 127, which would pass this assertion without running a line of the script.
+nodocker=$(mktemp -d)
+ln -s "$(command -v bash)" "$nodocker/bash"
+rc=0; PATH="$nodocker" ./docker-collect.sh --dry-run >/dev/null 2>&1 || rc=$?
+rm -rf "$nodocker"
+[[ "$rc" -eq 127 ]] || fail "expected 127 when docker is not on PATH, got $rc"
+
 rm -f "$fakekube"
 unset FAKE_CA FAKE_CLIENT_CERT FAKE_CLIENT_KEY FAKE_NET_IP FAKE_SERVER
 

@@ -17,11 +17,17 @@
 #   --dry-run            print the docker command instead of running it
 set -euo pipefail
 
-log() { echo "docker-collect: $*" >&2; }
-die() { log "$*"; exit 1; }
+# Exit codes, sysexits(3) where it has a name for the failure. A caller
+# scripting this wrapper can tell a typo from a missing kubeconfig.
+readonly EX_USAGE=64      # bad flag
+readonly EX_NOINPUT=66    # kubeconfig not there
+readonly EX_NOTFOUND=127  # a program we shell out to is not installed
 
-command -v docker >/dev/null 2>&1 || die "docker not found on PATH"
-command -v kubectl >/dev/null 2>&1 || die "kubectl not found on PATH"
+log() { echo "docker-collect: $*" >&2; }
+die() { local code="$1"; shift; log "$*"; exit "$code"; }
+
+command -v docker >/dev/null 2>&1 || die "$EX_NOTFOUND" "docker not found on PATH"
+command -v kubectl >/dev/null 2>&1 || die "$EX_NOTFOUND" "kubectl not found on PATH"
 
 # Paths inside the collector container. Each is used twice — once in the -v that
 # mounts it and once in the -e that tells the container where to look — and the
@@ -49,12 +55,12 @@ while [[ $# -gt 0 ]]; do
     --dry-run) DRY_RUN="true"; shift ;;
     -h|--help) awk '/^#!/{next} /^[^#]/{exit} {print substr($0,3)}' "$0"; exit 0 ;;
     --) shift; NAMESPACES+=("$@"); break ;;
-    -*) die "unknown option: $1 (see --help)" ;;
+    -*) die "$EX_USAGE" "unknown option: $1 (see --help)" ;;
     *) NAMESPACES+=("$1"); shift ;;
   esac
 done
 
-[[ -f "$KUBECONFIG_PATH" ]] || die "kubeconfig not found: $KUBECONFIG_PATH"
+[[ -f "$KUBECONFIG_PATH" ]] || die "$EX_NOINPUT" "kubeconfig not found: $KUBECONFIG_PATH"
 
 # One call, four lines: CA / client-cert / client-key / server, in that order.
 CTX_INFO="$(kubectl --kubeconfig "$KUBECONFIG_PATH" config view --minify -o jsonpath='{.clusters[0].cluster.certificate-authority}{"\n"}{.users[0].user.client-certificate}{"\n"}{.users[0].user.client-key}{"\n"}{.clusters[0].cluster.server}{"\n"}' 2>/dev/null || true)"
