@@ -23,6 +23,12 @@ die() { log "$*"; exit 1; }
 command -v docker >/dev/null 2>&1 || die "docker not found on PATH"
 command -v kubectl >/dev/null 2>&1 || die "kubectl not found on PATH"
 
+# Paths inside the collector container. Each is used twice — once in the -v that
+# mounts it and once in the -e that tells the container where to look — and the
+# two have to stay identical or the mount lands where nothing reads it.
+readonly CONTAINER_KUBECONFIG="/home/collector/.kube/config"
+readonly CONTAINER_OUTPUT_DIR="/out"
+
 OUTPUT_DIR="./out"
 S3_URI=""
 IMAGE="ghcr.io/fabiocicerchia/cluster-info-collector"
@@ -94,10 +100,10 @@ DOCKER_ARGS=(run --rm)
 [[ -n "$NETWORK" ]] && DOCKER_ARGS+=(--network "$NETWORK")
 DOCKER_ARGS+=(
   --user "$(id -u):$(id -g)"
-  -e "KUBECONFIG=/home/collector/.kube/config"
-  -v "${KUBECONFIG_PATH}:/home/collector/.kube/config:ro"
-  -v "${OUTPUT_DIR_ABS}:/out"
-  -e "OUTPUT_DIR=/out"
+  -e "KUBECONFIG=${CONTAINER_KUBECONFIG}"
+  -v "${KUBECONFIG_PATH}:${CONTAINER_KUBECONFIG}:ro"
+  -v "${OUTPUT_DIR_ABS}:${CONTAINER_OUTPUT_DIR}"
+  -e "OUTPUT_DIR=${CONTAINER_OUTPUT_DIR}"
 )
 for DIR in "${!MOUNT_DIRS[@]}"; do
   DOCKER_ARGS+=(-v "${DIR}:${DIR}:ro")
