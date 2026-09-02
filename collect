@@ -66,12 +66,12 @@ for NS in $NAMESPACES; do
 
   for POD in $(kubectl -n "$NS" get pods -o jsonpath='{.items[*].metadata.name}' 2>/dev/null); do
     dump "$NSDIR/logs/${POD}.describe.txt" kubectl -n "$NS" describe pod "$POD"
-    for C in $(kubectl -n "$NS" get pod "$POD" -o jsonpath='{.spec.containers[*].name}' 2>/dev/null); do
-      kubectl -n "$NS" logs "$POD" -c "$C" --tail="$LOG_TAIL_LINES" "${LOG_SINCE_ARGS[@]}" \
-        > "$NSDIR/logs/${POD}_${C}.log" 2>&1 || true
+    for CONTAINER in $(kubectl -n "$NS" get pod "$POD" -o jsonpath='{.spec.containers[*].name}' 2>/dev/null); do
+      kubectl -n "$NS" logs "$POD" -c "$CONTAINER" --tail="$LOG_TAIL_LINES" "${LOG_SINCE_ARGS[@]}" \
+        > "$NSDIR/logs/${POD}_${CONTAINER}.log" 2>&1 || true
       if [[ "$INCLUDE_PREVIOUS" == "true" ]]; then
-        kubectl -n "$NS" logs "$POD" -c "$C" --previous --tail="$LOG_TAIL_LINES" "${LOG_SINCE_ARGS[@]}" \
-          > "$NSDIR/logs/${POD}_${C}.previous.log" 2>/dev/null || rm -f "$NSDIR/logs/${POD}_${C}.previous.log"
+        kubectl -n "$NS" logs "$POD" -c "$CONTAINER" --previous --tail="$LOG_TAIL_LINES" "${LOG_SINCE_ARGS[@]}" \
+          > "$NSDIR/logs/${POD}_${CONTAINER}.previous.log" 2>/dev/null || rm -f "$NSDIR/logs/${POD}_${CONTAINER}.previous.log"
       fi
     done
   done
