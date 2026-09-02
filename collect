@@ -4,7 +4,6 @@
 #   NAMESPACES        space-separated namespaces (default: all namespaces)
 #   LOG_TAIL_LINES    log lines per container            (default 2000)
 #   INCLUDE_PREVIOUS  previous-container logs too        (default true)
-#   REDACT_SECRETS    dump secret names only, no data    (default true, keep it)
 #   REDACT_ENV        redact secret-like env var values in describe/resource dumps (default true)
 #   SINCE             only fetch logs newer than this (e.g. 1h, 30m)  (default: all)
 #   MAX_BUNDLE_MB     truncate biggest logs first past this size      (default 0 = unlimited)
