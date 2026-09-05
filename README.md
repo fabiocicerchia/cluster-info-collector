@@ -55,16 +55,16 @@ docker run --rm -v ~/.kube:/home/collector/.kube:ro \
 
 ## Configuration
 
-| Variable | Default | Purpose |
-|---|---|---|
-| `NAMESPACES` / args | all | namespaces to collect |
-| `LOG_TAIL_LINES` | `2000` | log lines per container |
-| `INCLUDE_PREVIOUS` | `true` | crashed-container logs |
-| `REDACT_ENV` | `true` | redact secret-like env var values in describe/resource dumps |
-| `SINCE` | – | only fetch logs newer than this (`kubectl logs --since`, e.g. `1h`, `30m`) |
-| `MAX_BUNDLE_MB` | `0` (unlimited) | truncate the biggest `*.log` files first until the bundle fits |
-| `OUTPUT_DIR` | `/tmp` | bundle destination |
-| `BUNDLE_S3_URI` | – | upload target |
+| Variable            | Default         | Purpose                                                                    |
+| ------------------- | --------------- | -------------------------------------------------------------------------- |
+| `NAMESPACES` / args | all             | namespaces to collect                                                      |
+| `LOG_TAIL_LINES`    | `2000`          | log lines per container                                                    |
+| `INCLUDE_PREVIOUS`  | `true`          | crashed-container logs                                                     |
+| `REDACT_ENV`        | `true`          | redact secret-like env var values in describe/resource dumps               |
+| `SINCE`             | –               | only fetch logs newer than this (`kubectl logs --since`, e.g. `1h`, `30m`) |
+| `MAX_BUNDLE_MB`     | `0` (unlimited) | truncate the biggest `*.log` files first until the bundle fits             |
+| `OUTPUT_DIR`        | `/tmp`          | bundle destination                                                         |
+| `BUNDLE_S3_URI`     | –               | upload target                                                              |
 
 ## Development
 

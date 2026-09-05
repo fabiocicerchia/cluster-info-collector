@@ -18,7 +18,7 @@ collection.
 
 ## Data flow
 
-```
+```text
 collect → mktemp workdir → kubectl dumps → tar -czf bundle → [aws s3 cp]
 ```
 
