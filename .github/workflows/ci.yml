@@ -17,8 +17,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
-      - name: Lint (hadolint + shellcheck)
-        run: make lint
+      # Deliberately not `make lint`: that verb is the whole pre-commit gate
+      # (FC-GEN-057), which code-quality.yml already runs on every push. This
+      # job stays the fast subset — the checks that are about this image.
+      - name: Dockerfile and shell
+        run: |
+          docker run --rm -i hadolint/hadolint < Dockerfile
+          shellcheck collect lib.sh docker-collect.sh test.sh test-unit.sh
 
   test:
     runs-on: ubuntu-latest

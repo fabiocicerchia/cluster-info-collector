@@ -51,4 +51,5 @@ jobs:
           sarif_file: trivy.sarif
 
 # CodeQL doesn't support shell; this repo is a Bash script + Dockerfile, so
-# shellcheck (via code-quality.yml) and hadolint (via `make lint`) cover it.
+# shellcheck and hadolint cover it, through the pre-commit gate that
+# code-quality.yml runs and `make lint` reproduces.
