@@ -7,8 +7,8 @@ Thanks for taking the time to contribute to cluster-info-collector!
 You need Docker (with buildx for multi-arch), `make`, and `shellcheck`.
 
 1. Fork and clone the repo.
-2. Install git hooks and dev tooling: `make setup`.
-3. Create a branch: `git checkout -b feat/short-description`.
+1. Install git hooks and dev tooling: `make setup`.
+1. Create a branch: `git checkout -b feat/short-description`.
 
 ```sh
 make build   # build the image locally
@@ -36,9 +36,9 @@ Use [Conventional Commits](https://www.conventionalcommits.org/): `feat:`,
 Releases are automated by [release-please](.github/workflows/release.yml):
 
 1. Merge `feat:`/`fix:` PRs into `main` as normal — **no tag is created**.
-2. release-please keeps an open **release PR** ("chore: release X.Y.Z"),
+1. release-please keeps an open **release PR** ("chore: release X.Y.Z"),
    recalculating the version and `CHANGELOG.md` on every merge.
-3. **Merge the release PR** to ship — that (and only that) creates the
+1. **Merge the release PR** to ship — that (and only that) creates the
    `vX.Y.Z` tag + GitHub Release, and then builds and pushes the multi-arch
    image to GHCR.
 
