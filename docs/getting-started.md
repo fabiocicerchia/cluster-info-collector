@@ -37,11 +37,11 @@ README still works if you'd rather not use the wrapper.
 When it refuses, `docker-collect.sh` exits with a code that says which check
 failed, so a script wrapping it can tell them apart:
 
-| Code | Meaning |
-|---|---|
-| `64` | unknown option |
-| `66` | kubeconfig not found at the path in use |
-| `127` | `docker` or `kubectl` not on `PATH` |
+| Code  | Meaning                                 |
+| ----- | --------------------------------------- |
+| `64`  | unknown option                          |
+| `66`  | kubeconfig not found at the path in use |
+| `127` | `docker` or `kubectl` not on `PATH`     |
 
 Anything else is the collector container's own exit code, passed through.
 

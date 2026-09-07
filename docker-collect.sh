@@ -63,7 +63,12 @@ done
 [[ -f "$KUBECONFIG_PATH" ]] || die "$EX_NOINPUT" "kubeconfig not found: $KUBECONFIG_PATH"
 
 # One call, four lines: CA / client-cert / client-key / server, in that order.
-CTX_INFO="$(kubectl --kubeconfig "$KUBECONFIG_PATH" config view --minify -o jsonpath='{.clusters[0].cluster.certificate-authority}{"\n"}{.users[0].user.client-certificate}{"\n"}{.users[0].user.client-key}{"\n"}{.clusters[0].cluster.server}{"\n"}' 2>/dev/null || true)"
+JSONPATH='{.clusters[0].cluster.certificate-authority}{"\n"}'
+JSONPATH="$JSONPATH"'{.users[0].user.client-certificate}{"\n"}'
+JSONPATH="$JSONPATH"'{.users[0].user.client-key}{"\n"}'
+JSONPATH="$JSONPATH"'{.clusters[0].cluster.server}{"\n"}'
+CTX_INFO="$(kubectl --kubeconfig "$KUBECONFIG_PATH" config view --minify \
+  -o jsonpath="$JSONPATH" 2>/dev/null || true)"
 mapfile -t CTX_LINES <<<"$CTX_INFO"
 CA_PATH="${CTX_LINES[0]:-}"
 CLIENT_CERT="${CTX_LINES[1]:-}"
@@ -91,7 +96,9 @@ if [[ -n "$SERVER" ]]; then
   HOST="${HOST%%/*}"
   if [[ -n "$HOST" ]]; then
     for NET in $(docker network ls -q 2>/dev/null); do
-      if docker network inspect "$NET" -f '{{range .Containers}}{{.IPv4Address}} {{end}}' 2>/dev/null | grep -qF "${HOST}/"; then
+      NET_IPS=$(docker network inspect "$NET" \
+        -f '{{range .Containers}}{{.IPv4Address}} {{end}}' 2>/dev/null || true)
+      if printf '%s' "$NET_IPS" | grep -qF "${HOST}/"; then
         NETWORK="$(docker network inspect "$NET" -f '{{.Name}}')"
         break
       fi
