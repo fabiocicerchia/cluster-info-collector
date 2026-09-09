@@ -1,0 +1,71 @@
+.TH COLLECT 1 "2026-09" "cluster-info-collector" "User Commands"
+.SH NAME
+collect \- gather a Kubernetes incident support bundle
+.SH SYNOPSIS
+.B collect
+.RI [ namespace ...]
+.SH DESCRIPTION
+Collects a support bundle from a live cluster \(em resources, describes,
+events and container logs \(em and writes it as a tarball.
+.PP
+With no arguments it covers all namespaces. Configuration is by
+environment variable rather than flags, so the same invocation works from
+a shell, a Job manifest and a CI step.
+.PP
+Values that look like secrets are redacted from describe and resource
+dumps by default.
+.SH ENVIRONMENT
+.TP
+.B NAMESPACES
+Space-separated namespaces to collect (default: all namespaces).
+.TP
+.B LOG_TAIL_LINES
+Log lines per container (default 2000).
+.TP
+.B INCLUDE_PREVIOUS
+Also fetch previous-container logs (default true).
+.TP
+.B REDACT_ENV
+Redact secret-like environment variable values (default true).
+.TP
+.B SINCE
+Only fetch logs newer than this, e.g.
+.BR 1h ,
+.BR 30m
+(default: all).
+.TP
+.B MAX_BUNDLE_MB
+Truncate the biggest logs first past this size (default 0, unlimited).
+.TP
+.B OUTPUT_DIR
+Where the tarball lands (default /tmp).
+.TP
+.B BUNDLE_S3_URI
+Optional
+.I s3://bucket/prefix
+to upload the bundle to.
+.SH EXIT STATUS
+.TP
+.B 0
+A bundle was written.
+.TP
+.B non-zero
+The cluster could not be reached, or the bundle could not be written.
+.SH EXAMPLES
+.PP
+Everything, with an hour of logs:
+.PP
+.RS
+.B SINCE=1h collect
+.RE
+.PP
+Two namespaces, capped at 200 MB:
+.PP
+.RS
+.B MAX_BUNDLE_MB=200 collect payments checkout
+.RE
+.SH SEE ALSO
+.BR kubectl (1).
+Project documentation:
+.UR https://github.com/fabiocicerchia/cluster-info-collector
+.UE
