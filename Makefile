@@ -8,7 +8,7 @@ PLATFORMS ?= linux/amd64,linux/arm64
 
 .DEFAULT_GOAL := help
 
-.PHONY: help setup install build test lint run format analyze push release
+.PHONY: help setup install uninstall build test lint run format analyze push release
 
 help: ## Show this help
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | \
@@ -29,8 +29,17 @@ test: build test-unit ## Build + smoke test
 test-unit: ## Unit tests for lib.sh, no docker/kubectl required
 	./test-unit.sh
 
-install: ## Pull the published image onto this machine
-	docker pull $(IMAGE):$(VERSION)
+install: ## Install the tools and their man pages (DESTDIR/PREFIX honoured)
+	install -d "$(DESTDIR)$(PREFIX)/bin" "$(DESTDIR)$(PREFIX)/share/man/man1"
+	install -m 0755 collect "$(DESTDIR)$(PREFIX)/bin/collect"
+	install -m 0644 man/collect.1 "$(DESTDIR)$(PREFIX)/share/man/man1/collect.1"
+	install -d "$(DESTDIR)$(PREFIX)/lib/cluster-info-collector"
+	install -m 0644 lib.sh "$(DESTDIR)$(PREFIX)/lib/cluster-info-collector/lib.sh"
+	@echo "installed collect into $(DESTDIR)$(PREFIX)/bin"
+
+uninstall: ## Remove what `make install` put down
+	rm -f "$(DESTDIR)$(PREFIX)/bin/collect" "$(DESTDIR)$(PREFIX)/share/man/man1/collect.1"
+	rm -f "$(DESTDIR)$(PREFIX)/lib/cluster-info-collector/lib.sh"
 
 run: build ## Run the collector from the image (ARGS are its arguments)
 	docker run --rm $(IMAGE):$(VERSION) $(ARGS)

@@ -25,7 +25,15 @@ dump() {
 }
 
 # shellcheck source=lib.sh
-. "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/lib.sh"
+_here="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# From a checkout lib.sh sits beside this script; once installed it lives
+# under PREFIX/lib, because a library in PREFIX/bin is not a binary.
+if [ -f "$_here/lib.sh" ]; then
+  . "$_here/lib.sh"
+else
+  # shellcheck source=/dev/null  # resolved at run time, not at lint time
+  . "$_here/../lib/cluster-info-collector/lib.sh"
+fi
 
 NAMESPACES="${*:-${NAMESPACES:-}}"
 LOG_TAIL_LINES="${LOG_TAIL_LINES:-2000}"
