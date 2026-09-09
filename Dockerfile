@@ -24,8 +24,8 @@ RUN apk add --no-cache bash=5.3.9-r1 tar=1.35-r5 gzip=1.14-r3 aws-cli=2.34.63-r0
  && adduser -D -u 10001 collector
 COPY NOTICE /NOTICE
 COPY --from=fetch /kubectl /usr/local/bin/kubectl
-COPY collect lib.sh /usr/local/bin/
+COPY cluster-collect lib.sh /usr/local/bin/
 USER 10001
 # Run-once collector: it starts, writes a bundle, and exits — nothing to poll.
 HEALTHCHECK NONE
-ENTRYPOINT ["/usr/local/bin/collect"]
+ENTRYPOINT ["/usr/local/bin/cluster-collect"]

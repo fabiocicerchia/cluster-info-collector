@@ -23,7 +23,7 @@ readonly EX_USAGE=64      # bad flag
 readonly EX_NOINPUT=66    # kubeconfig not there
 readonly EX_NOTFOUND=127  # a program we shell out to is not installed
 
-log() { echo "docker-collect: $*" >&2; }
+log() { echo "docker-cluster-collect: $*" >&2; }
 die() { local code="$1"; shift; log "$*"; exit "$code"; }
 
 command -v docker >/dev/null 2>&1 || die "$EX_NOTFOUND" "docker not found on PATH"

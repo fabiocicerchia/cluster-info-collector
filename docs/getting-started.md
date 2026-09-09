@@ -11,13 +11,13 @@
 Locally against your current context, without Docker — collect everything:
 
 ```sh
-./collect
+./cluster-collect
 ```
 
 Scope to specific namespaces and ship to S3:
 
 ```sh
-BUNDLE_S3_URI=s3://incidents/2026-07-10-api-outage/ ./collect payments checkout
+BUNDLE_S3_URI=s3://incidents/2026-07-10-api-outage/ ./cluster-collect payments checkout
 ```
 
 From your laptop via Docker instead — `docker-collect.sh` auto-detects your

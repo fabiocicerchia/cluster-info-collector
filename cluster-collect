@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# collect [namespace ...] — gather an incident support bundle.
+# cluster-collect [namespace ...] — gather an incident support bundle.
 #
 #   NAMESPACES        space-separated namespaces (default: all namespaces)
 #   LOG_TAIL_LINES    log lines per container            (default 2000)
@@ -11,7 +11,7 @@
 #   BUNDLE_S3_URI     optional s3://bucket/prefix upload
 set -euo pipefail
 
-log() { echo "collect: $*" >&2; }
+log() { echo "cluster-collect: $*" >&2; }
 
 # dump FILE CMD... — run CMD, capturing stdout and stderr into FILE, through
 # redact_stream when REDACT_ENV is on. Never aborts the collection.

@@ -1,5 +1,5 @@
 # shellcheck shell=bash
-# Pure helpers used by `collect`, kept separate so test-unit.sh can source
+# Pure helpers used by `cluster-collect`, kept separate so test-unit.sh can source
 # them without running the kubectl-heavy main script.
 
 # Redact secret-like env var values ("KEY: value" inline, or YAML "- name: KEY" /
@@ -64,7 +64,7 @@ enforce_size_budget() {
     ((size <= max_bytes)) && break
     [[ -s "$f" ]] || continue
     {
-      echo "... [collect: truncated to fit ${max_mb}MB size budget]"
+      echo "... [cluster-collect: truncated to fit ${max_mb}MB size budget]"
       tail -n "$keep_lines" "$f"
     } >"${f}.trunc" && mv "${f}.trunc" "$f"
   done

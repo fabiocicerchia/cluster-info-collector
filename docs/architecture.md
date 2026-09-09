@@ -2,7 +2,7 @@
 
 ## Overview
 
-One Bash script, `collect`. No daemon, no state — it runs once, writes a
+One Bash script, `cluster-collect`. No daemon, no state — it runs once, writes a
 timestamped tarball, and exits. Every `kubectl` call ends in `|| true` so a
 single failing command (RBAC gap, missing metrics-server) never aborts the
 collection.
@@ -19,7 +19,7 @@ collection.
 ## Data flow
 
 ```text
-collect → mktemp workdir → kubectl dumps → tar -czf bundle → [aws s3 cp]
+cluster-collect → mktemp workdir → kubectl dumps → tar -czf bundle → [aws s3 cp]
 ```
 
 ## Decisions
@@ -27,11 +27,11 @@ collect → mktemp workdir → kubectl dumps → tar -czf bundle → [aws s3 cp]
 - **Secret data is never collected** — only `get secrets` (names). This is a
   hard invariant; don't add anything that reads secret values.
 - **Read-only RBAC** lives in `manifests/job.yaml`, scoped to exactly the kinds
-  `collect` reads. Extend it there when the script grows — and in
+  `cluster-collect` reads. Extend it there when the script grows — and in
   `chart/values.yaml`, which mirrors it. The chart used to default to
   `apiGroups: ["*"], resources: ["*"]`, i.e. cluster-wide read on secrets too,
   which made the invariant above unverifiable for anyone installing with Helm.
-- **Neither RBAC grants `secrets`.** `collect` runs `kubectl get secrets` for
+- **Neither RBAC grants `secrets`.** `cluster-collect` runs `kubectl get secrets` for
   the name list, so under both it writes a Forbidden error to
   `secret-names.txt` rather than a list — the same graceful degradation every
   other command relies on, and visible in the bundle.

@@ -42,7 +42,7 @@ spec:
   template:
     metadata:
       annotations:
-        container.apparmor.security.beta.kubernetes.io/collect: runtime/default
+        container.apparmor.security.beta.kubernetes.io/cluster-collect: runtime/default
     spec:
       serviceAccountName: cluster-info-collector
       restartPolicy: Never
@@ -56,7 +56,7 @@ spec:
         seccompProfile:
           type: RuntimeDefault
       containers:
-        - name: collect
+        - name: cluster-collect
           # Pin a released tag; bump on upgrade. Swap for an @sha256 digest
           # if your admission policy requires it.
           image: fabiocicerchia/cluster-info-collector:0.1.0
@@ -93,7 +93,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
   name: cluster-info-collector-read
-# Scoped to what `collect` reads. Add new kinds here if the script grows.
+# Scoped to what `cluster-collect` reads. Add new kinds here if the script grows.
 rules:
   - apiGroups: [""]
     resources:

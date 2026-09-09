@@ -31,14 +31,14 @@ test-unit: ## Unit tests for lib.sh, no docker/kubectl required
 
 install: ## Install the tools and their man pages (DESTDIR/PREFIX honoured)
 	install -d "$(DESTDIR)$(PREFIX)/bin" "$(DESTDIR)$(PREFIX)/share/man/man1"
-	install -m 0755 collect "$(DESTDIR)$(PREFIX)/bin/collect"
-	install -m 0644 man/collect.1 "$(DESTDIR)$(PREFIX)/share/man/man1/collect.1"
+	install -m 0755 cluster-collect "$(DESTDIR)$(PREFIX)/bin/cluster-collect"
+	install -m 0644 man/cluster-collect.1 "$(DESTDIR)$(PREFIX)/share/man/man1/cluster-collect.1"
 	install -d "$(DESTDIR)$(PREFIX)/lib/cluster-info-collector"
 	install -m 0644 lib.sh "$(DESTDIR)$(PREFIX)/lib/cluster-info-collector/lib.sh"
-	@echo "installed collect into $(DESTDIR)$(PREFIX)/bin"
+	@echo "installed cluster-collect into $(DESTDIR)$(PREFIX)/bin"
 
 uninstall: ## Remove what `make install` put down
-	rm -f "$(DESTDIR)$(PREFIX)/bin/collect" "$(DESTDIR)$(PREFIX)/share/man/man1/collect.1"
+	rm -f "$(DESTDIR)$(PREFIX)/bin/cluster-collect" "$(DESTDIR)$(PREFIX)/share/man/man1/cluster-collect.1"
 	rm -f "$(DESTDIR)$(PREFIX)/lib/cluster-info-collector/lib.sh"
 
 run: build ## Run the collector from the image (ARGS are its arguments)
