@@ -31,6 +31,7 @@ _here="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 if [ -f "$_here/lib.sh" ]; then
   . "$_here/lib.sh"
 else
+  # shellcheck source=/dev/null  # resolved at run time, not at lint time
   . "$_here/../lib/cluster-info-collector/lib.sh"
 fi
 
