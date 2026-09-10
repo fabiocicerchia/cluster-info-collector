@@ -4,6 +4,18 @@ All notable changes to this project are documented here. The format is based
 on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.0](https://github.com/fabiocicerchia/cluster-info-collector/compare/v0.3.2...v0.4.0) (2026-09-10)
+
+
+### Features
+
+* **packaging:** man page, and an install that stages rather than pulls ([#56](https://github.com/fabiocicerchia/cluster-info-collector/issues/56)) ([8de47b0](https://github.com/fabiocicerchia/cluster-info-collector/commit/8de47b0cdb980b9f2609badd8dded2c75a3dcb12))
+
+
+### Bug Fixes
+
+* **release:** grant id-token on the job that calls the signing workflow ([#60](https://github.com/fabiocicerchia/cluster-info-collector/issues/60)) ([77ffa42](https://github.com/fabiocicerchia/cluster-info-collector/commit/77ffa425a5363b1f208ec3b1b21a6683003e00d7))
+
 ## [0.3.2](https://github.com/fabiocicerchia/cluster-info-collector/compare/v0.3.1...v0.3.2) (2026-09-08)
 
 
