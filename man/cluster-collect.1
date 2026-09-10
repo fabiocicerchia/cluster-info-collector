@@ -1,8 +1,8 @@
-.TH COLLECT 1 "2026-09" "cluster-info-collector" "User Commands"
+.TH CLUSTER-COLLECT 1 "2026-09" "cluster-info-collector" "User Commands"
 .SH NAME
-collect \- gather a Kubernetes incident support bundle
+cluster-collect \- gather a Kubernetes incident support bundle
 .SH SYNOPSIS
-.B collect
+.B cluster-collect
 .RI [ namespace ...]
 .SH DESCRIPTION
 Collects a support bundle from a live cluster \(em resources, describes,
@@ -56,13 +56,13 @@ The cluster could not be reached, or the bundle could not be written.
 Everything, with an hour of logs:
 .PP
 .RS
-.B SINCE=1h collect
+.B SINCE=1h cluster-collect
 .RE
 .PP
 Two namespaces, capped at 200 MB:
 .PP
 .RS
-.B MAX_BUNDLE_MB=200 collect payments checkout
+.B MAX_BUNDLE_MB=200 cluster-collect payments checkout
 .RE
 .SH SEE ALSO
 .BR kubectl (1).

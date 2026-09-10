@@ -72,14 +72,14 @@ serviceAccount:
 rbac:
   create: true
   clusterWide: true
-  # Scoped to exactly what `collect` reads, mirroring manifests/job.yaml. This
+  # Scoped to exactly what `cluster-collect` reads, mirroring manifests/job.yaml. This
   # was `apiGroups: ["*"], resources: ["*"]` with get/list/watch, which is
   # cluster-wide read on everything — secrets included. That contradicts the
   # one thing this tool promises: secret names are listed, secret data is
   # never collected. A chart that hands the ServiceAccount every secret in the
   # cluster makes that promise unverifiable, whatever the script does.
   #
-  # Add new kinds here and in manifests/job.yaml together if `collect` grows.
+  # Add new kinds here and in manifests/job.yaml together if `cluster-collect` grows.
   rules:
     - apiGroups: [""]
       resources:
@@ -107,7 +107,7 @@ rbac:
       verbs: ["get", "list"]
     # Deliberately absent: secrets.
     #
-    # `collect` runs `kubectl get secrets` for the name list, so without this
+    # `cluster-collect` runs `kubectl get secrets` for the name list, so without this
     # rule secret-names.txt records a Forbidden error instead — which is the
     # graceful degradation every other command here already relies on, and it
     # is visible in the bundle rather than silent.
