@@ -4,6 +4,17 @@ All notable changes to this project are documented here. The format is based
 on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.0](https://github.com/fabiocicerchia/cluster-info-collector/compare/v0.4.0...v1.0.0) (2026-09-10)
+
+
+### ⚠ BREAKING CHANGES
+
+* the command is now `cluster-collect`. The image entrypoint and the Job container name are now `cluster-collect`. The verb 'collect' in prose is unchanged.
+
+### Code Refactoring
+
+* rename the `collect` command to `cluster-collect` ([#57](https://github.com/fabiocicerchia/cluster-info-collector/issues/57)) ([3ebae34](https://github.com/fabiocicerchia/cluster-info-collector/commit/3ebae3483812fd2a55717b2ff153151fc1b39db8))
+
 ## [0.4.0](https://github.com/fabiocicerchia/cluster-info-collector/compare/v0.3.2...v0.4.0) (2026-09-10)
 
 
