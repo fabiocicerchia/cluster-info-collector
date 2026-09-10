@@ -23,7 +23,7 @@ jobs:
       - name: Dockerfile and shell
         run: |
           docker run --rm -i hadolint/hadolint < Dockerfile
-          shellcheck collect lib.sh docker-collect.sh test.sh test-unit.sh
+          shellcheck cluster-collect lib.sh docker-collect.sh test.sh test-unit.sh
 
   test:
     runs-on: ubuntu-latest
