@@ -15,6 +15,26 @@ to S3. Secret **names** are listed; secret **data is never collected**.
 When production is on fire, nobody remembers the fifteen kubectl commands.
 This is the one command.
 
+## Features
+
+- One command instead of the fifteen `kubectl` invocations nobody remembers
+  mid-incident.
+- Collects nodes, events, resource dumps, `describe`s, per-container logs
+  (current **and** previous crash), and `kubectl top`, tarred with a UTC
+  timestamp.
+- **Secret data is never collected** — secret *names* are listed, and
+  `REDACT_ENV` redacts secret-looking env values out of the describe and
+  resource dumps.
+- Ships straight to S3 when `BUNDLE_S3_URI` is set, so the bundle leaves the
+  cluster without a second step.
+- Bounded output: `LOG_TAIL_LINES`, `SINCE`, `INCLUDE_PREVIOUS`, and
+  `MAX_BUNDLE_MB`, which truncates the biggest `*.log` files first until the
+  bundle fits.
+- Runs in-cluster as a Job with the RBAC included in the manifest, or from
+  your laptop via `docker-collect.sh` — which handles kubeconfig permissions,
+  `--network` for minikube/kind/k3d, and getting the bundle back out.
+- `--dry-run` prints the `docker run` it would execute.
+
 ## Install
 
 ```sh
