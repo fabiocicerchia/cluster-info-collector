@@ -6,8 +6,6 @@ FROM alpine:3.24@sha256:28bd5fe8b56d1bd048e5babf5b10710ebe0bae67db86916198a6eec4
 ARG KUBECTL_VERSION
 ARG TARGETOS=linux
 ARG TARGETARCH=amd64
-# Versions pinned for alpine 3.24. Nothing bumps them: Alpine GCs old versions
-# out of the index, and the build fails the day it does. Re-check on a failure.
 RUN apk add --no-cache curl=8.22.0-r0 ca-certificates=20260909-r0
 # pipefail so the checksum comparison below can't be silently skipped
 SHELL ["/bin/ash", "-o", "pipefail", "-c"]
