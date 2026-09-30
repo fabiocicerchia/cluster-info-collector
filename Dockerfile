@@ -2,7 +2,7 @@
 # dumps) for incident snapshots. Run it once, get a tarball of evidence.
 ARG KUBECTL_VERSION=1.33.2
 
-FROM alpine:3.24@sha256:28bd5fe8b56d1bd048e5babf5b10710ebe0bae67db86916198a6eec434943f8b AS fetch
+FROM alpine:3.24@sha256:294b683cb724975bec92580e1e685676bd4b50bda910ddb8c51d4cabeaec77e6 AS fetch
 ARG KUBECTL_VERSION
 ARG TARGETOS=linux
 ARG TARGETARCH=amd64
@@ -15,7 +15,7 @@ RUN curl -fsSLo /kubectl "https://dl.k8s.io/release/v${KUBECTL_VERSION}/bin/${TA
  && echo "$(cat /kubectl.sha256)  /kubectl" | sha256sum -c - \
  && chmod 0755 /kubectl
 
-FROM alpine:3.24@sha256:28bd5fe8b56d1bd048e5babf5b10710ebe0bae67db86916198a6eec434943f8b
+FROM alpine:3.24@sha256:294b683cb724975bec92580e1e685676bd4b50bda910ddb8c51d4cabeaec77e6
 LABEL org.opencontainers.image.title="cluster-info-collector" \
       org.opencontainers.image.description="Support-bundle collector: logs, events, resource dumps for incident snapshots" \
       org.opencontainers.image.licenses="Apache-2.0 AND GPL-3.0-or-later" \
