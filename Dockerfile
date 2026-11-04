@@ -7,7 +7,7 @@ ARG KUBECTL_VERSION
 ARG TARGETOS=linux
 ARG TARGETARCH=amd64
 # Versions pinned for alpine 3.24; dependabot/renovate bumps them.
-RUN apk add --no-cache curl=8.22.0-r0 ca-certificates=20261020-r0
+RUN apk add --no-cache curl=8.23.0-r0 ca-certificates=20261020-r0
 # pipefail so the checksum comparison below can't be silently skipped
 SHELL ["/bin/ash", "-o", "pipefail", "-c"]
 RUN curl -fsSLo /kubectl "https://dl.k8s.io/release/v${KUBECTL_VERSION}/bin/${TARGETOS}/${TARGETARCH}/kubectl" \
