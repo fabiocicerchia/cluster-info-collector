@@ -10,7 +10,7 @@ Feature: Running the unit test suite
     Given no Kubernetes cluster is reachable
     And no docker daemon is running
     When the contributor runs make test-unit
-    Then every check runs against stand-in kubectl and docker commands
+    Then the laptop wrapper checks run against stand-in kubectl and docker commands
     And the run prints PASS
     And the run exits with status 0
 

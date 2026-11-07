@@ -10,7 +10,6 @@ Feature: Redacting secret-like values from describe and resource dumps
     Given a pod has the environment variable <name> set to <value>
     When the operator collects a bundle
     Then the pod's describe and resource dumps show <name> with the value <shown>
-    And the original value <value> does not appear next to <name>
 
     Examples:
       | name                  | value        | shown    |
@@ -40,12 +39,12 @@ Feature: Redacting secret-like values from describe and resource dumps
   Scenario: Only the first line of a multi-line secret value is masked
     Given a pod has the environment variable TLS_PRIVATE_KEY set to a multi-line PEM value
     When the operator collects a bundle
-    Then the line carrying TLS_PRIVATE_KEY shows REDACTED
-    And the following lines of the PEM value appear in clear in the resource dump
+    Then the line where the TLS_PRIVATE_KEY value starts shows REDACTED
+    And the PEM lines that follow it appear in clear in the describe and resource dumps
 
   @id:data-protection.secret-redaction.005 @rule:data-protection.redaction.secret-named-fields-masked @inferred @source:lib.sh#redact_stream @questionable
   Scenario: Any field whose name contains a secret word is masked, even when it holds no secret
-    Given a pod mounts the secret app-tls as a volume and sets automountServiceAccountToken to false
+    Given a pod mounts the secret app-tls as a volume, sets automountServiceAccountToken to false and takes an environment variable from a secretKeyRef
     When the operator collects a bundle
     Then the describe shows 'SecretName: REDACTED' instead of app-tls
     And the resource dump shows 'automountServiceAccountToken: REDACTED' instead of false

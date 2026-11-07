@@ -31,4 +31,4 @@ Feature: Keeping the bundle within a size budget
     When the operator collects a bundle
     Then every describe, resource dump and events file is complete
     And each container log has been truncated at most once
-    And the bundle is written larger than 1 MB, with no warning
+    And the collected files stay above 1 MB and the bundle is still written, with no warning

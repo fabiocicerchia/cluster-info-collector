@@ -3,7 +3,7 @@ Feature: Shipping the bundle to S3
   Lets operators deliver bundles straight to a support bucket without copying files off the cluster.
 
   Background:
-    Given the bundle cluster-bundle-20261107T104410Z.tar.gz has been written to /tmp
+    Given OUTPUT_DIR is "/tmp" and the run's bundle is named cluster-bundle-20261107T104410Z.tar.gz
 
   @id:bundle-delivery.s3-upload.001 @rule:bundle.s3.upload-to-prefix @inferred @source:cluster-collect#BUNDLE_S3_URI
   Scenario Outline: The bundle is uploaded under the configured S3 prefix

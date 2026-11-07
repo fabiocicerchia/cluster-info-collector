@@ -3,7 +3,7 @@ Feature: Installing the collector with one command
   Gives an operator a single curl-pipe command that readies the collector on their machine and tells them how to run it, so they can start an incident snapshot without reading the docs first.
 
   Background:
-    Given the operator runs the published one-line installer from the project's README or website
+    Given the operator has the published one-line installer command from the project's README or website
 
   @id:distribution.one-line-installer.001 @rule:distribution.installer.pulls-latest-published-image @inferred @source:install.sh#IMAGE @questionable
   Scenario: The installer fetches the latest published collector image

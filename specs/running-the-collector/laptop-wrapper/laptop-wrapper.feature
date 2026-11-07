@@ -7,10 +7,11 @@ Feature: Running a collection from a laptop
     And the operator has a kubeconfig for the cluster under investigation
 
   @id:running-the-collector.laptop-wrapper.001 @rule:collector.laptop-wrapper.dry-run-prints-without-running @inferred @source:docker-collect.sh#DRY_RUN
-  Scenario: A dry run shows the container command and runs nothing
+  Scenario: A dry run shows the container command without starting the collector
     When the operator runs the laptop wrapper with --dry-run
     Then the full docker command is printed on standard error, prefixed with "docker-cluster-collect:"
     And no collector container is started
+    And the output directory is still created on the host
     And the wrapper exits with status 0
 
   @id:running-the-collector.laptop-wrapper.002 @rule:collector.laptop-wrapper.bundle-written-to-host-dir-as-operator @inferred @source:docker-collect.sh#OUTPUT_DIR
