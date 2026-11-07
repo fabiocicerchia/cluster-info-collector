@@ -1,0 +1,1029 @@
+{
+ "excluded": {
+  "chart/check": [
+   {
+    "candidate": "Chart check lints the Helm chart with default values and fails on any lint or template error (chart/check.sh lines 3-6)",
+    "covered_by": "",
+    "reason": "TECH_DEVTOOLING",
+    "source": "chart/check.sh"
+   },
+   {
+    "candidate": "Chart check fails when the rendered default manifests contain no 'image:' line, and prints OK otherwise (chart/check.sh lines 7-8)",
+    "covered_by": "",
+    "reason": "TECH_DEVTOOLING",
+    "source": "chart/check.sh"
+   },
+   {
+    "candidate": "Chart check runs helm through a pinned alpine/helm:3.16.2 container, so it needs docker but not a local helm (chart/check.sh line 5)",
+    "covered_by": "",
+    "reason": "TECH_DEVTOOLING",
+    "source": "chart/check.sh#helm"
+   }
+  ],
+  "cluster-info-collector/cluster-collect": [
+   {
+    "candidate": "Log messages \"cluster-level snapshot\" / \"namespace NS\" on stderr",
+    "covered_by": "",
+    "reason": "TRIVIAL",
+    "source": "cluster-collect#log"
+   },
+   {
+    "candidate": "lib.sh is sourced beside the script or from PREFIX/lib/cluster-info-collector",
+    "covered_by": "",
+    "reason": "TECH_BUILD",
+    "source": "cluster-collect#_here"
+   },
+   {
+    "candidate": "Bundle assembled in a mktemp work directory that is never cleaned up",
+    "covered_by": "",
+    "reason": "INTERNAL_MECHANISM",
+    "source": "cluster-collect#WORK"
+   },
+   {
+    "candidate": "Resource usage: top-nodes.txt and top-pods.txt hold metrics or the metrics-unavailable error",
+    "covered_by": "snapshot.overview.cluster-wide-files",
+    "reason": "DUPLICATE_OF",
+    "source": "cluster-collect#cluster-level snapshot"
+   },
+   {
+    "candidate": "dump() captures stderr together with stdout into the file",
+    "covered_by": "",
+    "reason": "INTERNAL_MECHANISM",
+    "source": "cluster-collect#dump"
+   },
+   {
+    "candidate": "Invalid SINCE or non-integer MAX_BUNDLE_MB permutations",
+    "covered_by": "",
+    "reason": "TRIVIAL",
+    "source": "cluster-collect#MAX_BUNDLE_MB"
+   },
+   {
+    "candidate": "Each collected namespace carries its resources, events, usage and pod descriptions",
+    "covered_by": "",
+    "reason": "UNVERIFIABLE",
+    "source": "cluster-collect#NS loop"
+   },
+   {
+    "candidate": "Secrets are listed by name, never by content",
+    "covered_by": "",
+    "reason": "UNVERIFIABLE",
+    "source": "cluster-collect#NS loop"
+   }
+  ],
+  "cluster-info-collector/docker-collect": [
+   {
+    "candidate": "--help prints the usage header from the script's comments and exits 0",
+    "covered_by": "",
+    "reason": "TRIVIAL",
+    "source": "docker-collect.sh#-h|--help"
+   },
+   {
+    "candidate": "Container-side paths for kubeconfig and output are fixed constants used for both mount and env",
+    "covered_by": "",
+    "reason": "INTERNAL_MECHANISM",
+    "source": "docker-collect.sh#CONTAINER_KUBECONFIG"
+   },
+   {
+    "candidate": "Context details read in a single kubectl config view --minify call, using the first cluster and user entries",
+    "covered_by": "",
+    "reason": "INTERNAL_MECHANISM",
+    "source": "docker-collect.sh#JSONPATH"
+   },
+   {
+    "candidate": "Container removed after the run (--rm) and the wrapper execs docker so the container's exit status becomes the wrapper's",
+    "covered_by": "",
+    "reason": "INTERNAL_MECHANISM",
+    "source": "docker-collect.sh#DOCKER_ARGS"
+   },
+   {
+    "candidate": "Failure to read the kubeconfig context or list docker networks is tolerated and the run continues without extra mounts or network",
+    "covered_by": "",
+    "reason": "INTERNAL_MECHANISM",
+    "source": "docker-collect.sh#CTX_INFO"
+   }
+  ],
+  "cluster-info-collector/dockerfile": [
+   {
+    "candidate": "apk package versions pinned for alpine 3.24",
+    "covered_by": "",
+    "reason": "TECH_BUILD",
+    "source": "Dockerfile#RUN apk add"
+   },
+   {
+    "candidate": "base image pinned by digest",
+    "covered_by": "",
+    "reason": "TECH_BUILD",
+    "source": "Dockerfile#FROM"
+   },
+   {
+    "candidate": "KUBECTL_VERSION default 1.33.2 and TARGETOS/TARGETARCH build args",
+    "covered_by": "",
+    "reason": "TECH_BUILD",
+    "source": "Dockerfile#ARG"
+   },
+   {
+    "candidate": "multi-stage build separating curl from runtime",
+    "covered_by": "",
+    "reason": "TECH_BUILD",
+    "source": "Dockerfile#fetch"
+   },
+   {
+    "candidate": "OCI image labels (title, description, licenses, source)",
+    "covered_by": "",
+    "reason": "TECH_BUILD",
+    "source": "Dockerfile#LABEL"
+   },
+   {
+    "candidate": "NOTICE file copied into the image",
+    "covered_by": "",
+    "reason": "TECH_BUILD",
+    "source": "Dockerfile#COPY"
+   },
+   {
+    "candidate": "HEALTHCHECK NONE",
+    "covered_by": "",
+    "reason": "INTERNAL_MECHANISM",
+    "source": "Dockerfile#HEALTHCHECK"
+   }
+  ],
+  "cluster-info-collector/install": [
+   {
+    "candidate": "Installer prints 'Pulling cluster-info-collector from GHCR...' before pulling",
+    "covered_by": "",
+    "reason": "TRIVIAL",
+    "source": "install.sh#IMAGE"
+   },
+   {
+    "candidate": "Installer is a bash script run with strict shell options",
+    "covered_by": "",
+    "reason": "INTERNAL_MECHANISM",
+    "source": "install.sh#IMAGE"
+   }
+  ],
+  "cluster-info-collector/lib": [
+   {
+    "candidate": "dir_size_bytes sums file sizes recursively",
+    "covered_by": "",
+    "reason": "INTERNAL_MECHANISM",
+    "source": "lib.sh#dir_size_bytes"
+   },
+   {
+    "candidate": "Truncation writes to a .trunc temp file then renames it",
+    "covered_by": "",
+    "reason": "INTERNAL_MECHANISM",
+    "source": "lib.sh#enforce_size_budget"
+   },
+   {
+    "candidate": "Budget megabytes are 1024*1024 bytes",
+    "covered_by": "",
+    "reason": "TRIVIAL",
+    "source": "lib.sh#enforce_size_budget"
+   },
+   {
+    "candidate": "Inline redaction collapses spacing to a single space before REDACTED",
+    "covered_by": "",
+    "reason": "TRIVIAL",
+    "source": "lib.sh#redact_stream"
+   },
+   {
+    "candidate": "lib.sh is kept separate so unit tests can source it without kubectl",
+    "covered_by": "",
+    "reason": "TECH_DEVTOOLING",
+    "source": "lib.sh"
+   },
+   {
+    "candidate": "Truncating a log shorter than the kept tail grows it by the marker line",
+    "covered_by": "bundle-delivery.size-budget.only-container-logs-truncated",
+    "reason": "DUPLICATE_OF",
+    "source": "lib.sh#enforce_size_budget"
+   },
+   {
+    "candidate": "REDACT_ENV switch turns redaction off",
+    "covered_by": "the toggle is enforced in cluster-collect, not lib.sh; belongs to that module",
+    "reason": "UNVERIFIABLE",
+    "source": "cluster-collect#dump"
+   }
+  ],
+  "cluster-info-collector/makefile": [
+   {
+    "candidate": "Running `make` with no target prints the list of targets with their descriptions (help is the default goal)",
+    "covered_by": "",
+    "reason": "TECH_BUILD",
+    "source": "Makefile#help"
+   },
+   {
+    "candidate": "`make setup` installs the pre-commit hook",
+    "covered_by": "",
+    "reason": "TECH_BUILD",
+    "source": "Makefile#setup"
+   },
+   {
+    "candidate": "`make build` builds the image tagged $(IMAGE):$(VERSION), default fabiocicerchia/cluster-info-collector:0.1.0",
+    "covered_by": "",
+    "reason": "TECH_BUILD",
+    "source": "Makefile#build"
+   },
+   {
+    "candidate": "`make lint` runs every pre-commit hook on all files. The target's description says 'Run the whole gate', which differs from the 'hadolint + shellcheck' wording in CLAUDE.md",
+    "covered_by": "",
+    "reason": "TECH_BUILD",
+    "source": "Makefile#lint"
+   },
+   {
+    "candidate": "`make test` builds the image, runs the unit tests and then the smoke test. Its 'Build + smoke test' description leaves out the unit-test step",
+    "covered_by": "",
+    "reason": "TECH_BUILD",
+    "source": "Makefile#test"
+   },
+   {
+    "candidate": "`make test-unit` runs ./test-unit.sh and needs neither docker nor kubectl",
+    "covered_by": "",
+    "reason": "TECH_DEVTOOLING",
+    "source": "Makefile#test-unit"
+   },
+   {
+    "candidate": "`make install` puts cluster-collect (mode 0755), its man page and lib.sh under DESTDIR/PREFIX. PREFIX has no default, so a bare `make install` writes to /bin, /share/man and /lib",
+    "covered_by": "",
+    "reason": "TECH_BUILD",
+    "source": "Makefile#install"
+   },
+   {
+    "candidate": "`make uninstall` removes the files that `make install` put down",
+    "covered_by": "",
+    "reason": "TECH_BUILD",
+    "source": "Makefile#uninstall"
+   },
+   {
+    "candidate": "`make run` builds the image and runs the collector in it, passing ARGS through",
+    "covered_by": "",
+    "reason": "TECH_BUILD",
+    "source": "Makefile#run"
+   },
+   {
+    "candidate": "`make format` runs the whitespace, end-of-file and line-ending fixer hooks and ignores their non-zero exits",
+    "covered_by": "",
+    "reason": "TECH_DEVTOOLING",
+    "source": "Makefile#format"
+   },
+   {
+    "candidate": "`make analyze` runs a trivy fs scan for CRITICAL and HIGH vulnerabilities, misconfigurations and secrets. If trivy is missing it exits 69 with a pointer to the install docs",
+    "covered_by": "",
+    "reason": "TECH_BUILD",
+    "source": "Makefile#analyze"
+   },
+   {
+    "candidate": "`make push` builds and pushes the single-arch image tagged with VERSION",
+    "covered_by": "",
+    "reason": "TECH_BUILD",
+    "source": "Makefile#push"
+   },
+   {
+    "candidate": "`make release` builds and pushes a linux/amd64 and linux/arm64 image tagged with both VERSION and latest",
+    "covered_by": "",
+    "reason": "TECH_BUILD",
+    "source": "Makefile#release"
+   }
+  ],
+  "cluster-info-collector/test": [
+   {
+    "candidate": "Smoke test checks that kubectl, aws and tar are present in the image (prints deps-ok)",
+    "covered_by": "",
+    "reason": "TECH_DEVTOOLING",
+    "source": "test.sh:6"
+   },
+   {
+    "candidate": "Smoke test runs cluster-collect with NAMESPACES=none and no cluster, then checks a /tmp/cluster-bundle-*.tar.gz exists (prints bundle-ok); the collector's exit status is ignored, only the bundle's presence is checked. The product rule (a bundle is still produced with no reachable cluster) belongs to cluster-collect's graceful-degradation feature, not to this harness",
+    "covered_by": "",
+    "reason": "TECH_DEVTOOLING",
+    "source": "test.sh:7-10"
+   },
+   {
+    "candidate": "test.sh refuses to run without an image:tag argument (usage message)",
+    "covered_by": "",
+    "reason": "TECH_DEVTOOLING",
+    "source": "test.sh:5"
+   }
+  ],
+  "cluster-info-collector/test-unit": [
+   {
+    "candidate": "Inline KEY: value secret-like env vars are redacted, others untouched",
+    "covered_by": "lib.sh (data-protection/secret-redaction); this file only asserts it",
+    "reason": "TECH_DEVTOOLING",
+    "source": "test-unit.sh:10-12"
+   },
+   {
+    "candidate": "YAML name/value secret-like env vars are redacted without over-matching",
+    "covered_by": "lib.sh (data-protection/secret-redaction)",
+    "reason": "TECH_DEVTOOLING",
+    "source": "test-unit.sh:14-17"
+   },
+   {
+    "candidate": "dir_size_bytes returns a positive size for a non-empty dir",
+    "covered_by": "lib.sh (bundle-delivery/size-budget)",
+    "reason": "INTERNAL_MECHANISM",
+    "source": "test-unit.sh:28"
+   },
+   {
+    "candidate": "Size budget of 0 or an already-satisfied budget leaves logs untouched",
+    "covered_by": "lib.sh (bundle-delivery/size-budget)",
+    "reason": "TECH_DEVTOOLING",
+    "source": "test-unit.sh:30-34"
+   },
+   {
+    "candidate": "Over budget, the largest log is truncated to a marker plus the last N lines and small logs are untouched",
+    "covered_by": "lib.sh (bundle-delivery/size-budget)",
+    "reason": "TECH_DEVTOOLING",
+    "source": "test-unit.sh:36-39"
+   },
+   {
+    "candidate": "Dry run joins the cluster's docker network when the API server IP matches a container on it, and runs as the caller's uid:gid with KUBECONFIG set and deduplicated read-only cert-dir mounts",
+    "covered_by": "docker-collect.sh (running-the-collector/local-cluster-connectivity, laptop-wrapper)",
+    "reason": "TECH_DEVTOOLING",
+    "source": "test-unit.sh:69-75"
+   },
+   {
+    "candidate": "Dry run does not join any network when the server IP matches no container",
+    "covered_by": "docker-collect.sh (running-the-collector/local-cluster-connectivity)",
+    "reason": "TECH_DEVTOOLING",
+    "source": "test-unit.sh:77-80"
+   },
+   {
+    "candidate": "Wrapper exit codes 64 for an unknown option, 66 for a missing kubeconfig, 127 when docker is missing",
+    "covered_by": "docker-collect.sh (running-the-collector/wrapper-exit-codes)",
+    "reason": "TECH_DEVTOOLING",
+    "source": "test-unit.sh:82-96"
+   },
+   {
+    "candidate": "make test runs the unit suite before the smoke test, so CI gates on it",
+    "covered_by": "developer-tooling/build-and-tasks",
+    "reason": "TECH_BUILD",
+    "source": "Makefile:26"
+   },
+   {
+    "candidate": "CI shellchecks test-unit.sh",
+    "covered_by": "developer-tooling/linting",
+    "reason": "TECH_BUILD",
+    "source": ".github/workflows/ci.yml:26"
+   }
+  ],
+  "docs/stylesheets": [
+   {
+    "candidate": "Docs site uses the blue platform/Kubernetes accent pair (#38bdf8 / #3b82f6) for header, links, buttons and hero, shared with the docs/index.html splash",
+    "covered_by": "",
+    "reason": "TECH_BUILD",
+    "source": "docs/stylesheets/extra.css#:root"
+   },
+   {
+    "candidate": "Link colour switches between --accent-2 on light scheme and --accent on dark (slate) scheme, with a dark #0b0f1a ground for header and tabs",
+    "covered_by": "",
+    "reason": "INTERNAL_MECHANISM",
+    "source": "docs/stylesheets/extra.css#[data-md-color-scheme=\"slate\"]"
+   },
+   {
+    "candidate": "System font stacks for text and code so the stylesheet downloads no web font",
+    "covered_by": "",
+    "reason": "INTERNAL_MECHANISM",
+    "source": "docs/stylesheets/extra.css#:root"
+   },
+   {
+    "candidate": "Translucent blurred header, tab opacity, heading weights and letter-spacing, rounded code blocks",
+    "covered_by": "",
+    "reason": "TRIVIAL",
+    "source": "docs/stylesheets/extra.css#.md-header"
+   },
+   {
+    "candidate": "Tables styled as rounded cards with uppercase headers",
+    "covered_by": "",
+    "reason": "TRIVIAL",
+    "source": "docs/stylesheets/extra.css#.md-typeset table:not([class])"
+   },
+   {
+    "candidate": "Pill-shaped buttons with gradient primary variant and hover lift",
+    "covered_by": "",
+    "reason": "TRIVIAL",
+    "source": "docs/stylesheets/extra.css#.md-typeset .md-button"
+   },
+   {
+    "candidate": "Home hero with gradient-clipped title and tagline",
+    "covered_by": "",
+    "reason": "TRIVIAL",
+    "source": "docs/stylesheets/extra.css#.md-typeset .hero"
+   },
+   {
+    "candidate": "Feature cards with rounded borders, hover lift and accent-coloured icons",
+    "covered_by": "",
+    "reason": "TRIVIAL",
+    "source": "docs/stylesheets/extra.css#.md-typeset .grid.cards > ul > li"
+   },
+   {
+    "candidate": "Sidebar nav title/active link weights, footer colours, smooth scrolling",
+    "covered_by": "",
+    "reason": "TRIVIAL",
+    "source": "docs/stylesheets/extra.css#.md-nav__title"
+   },
+   {
+    "candidate": "Material's placeholder book logo is hidden because the repo has no logo",
+    "covered_by": "",
+    "reason": "TRIVIAL",
+    "source": "docs/stylesheets/extra.css#.md-header__button.md-logo"
+   }
+  ]
+ },
+ "lifted": {
+  "chart/check": [],
+  "cluster-info-collector/cluster-collect": [
+   {
+    "from_source": "lib.sh#redact_stream",
+    "rule": "data-protection.redaction.on-by-default: secret-like env values are masked unless REDACT_ENV is switched off"
+   },
+   {
+    "from_source": "lib.sh#enforce_size_budget",
+    "rule": "bundle.size-budget.truncate-largest-logs: largest logs truncated to their last 200 lines, non-log dumps untouched"
+   }
+  ],
+  "cluster-info-collector/docker-collect": [],
+  "cluster-info-collector/dockerfile": [
+   {
+    "from_source": "Dockerfile#fetch",
+    "rule": "distribution.container-image.verified-kubectl"
+   }
+  ],
+  "cluster-info-collector/install": [],
+  "cluster-info-collector/lib": [],
+  "cluster-info-collector/makefile": [],
+  "cluster-info-collector/test": [],
+  "cluster-info-collector/test-unit": [],
+  "docs/stylesheets": []
+ },
+ "retired": [],
+ "scenarios": {
+  "bundle-delivery.bundle-archive.001": {
+   "file": "specs/bundle-delivery/bundle-archive/bundle-archive.feature",
+   "fingerprint": "af30d7ede573",
+   "human": false,
+   "rule": "bundle.archive.utc-timestamped-tarball",
+   "source": "cluster-collect#BUNDLE",
+   "status": "inferred",
+   "test": "",
+   "tests": []
+  },
+  "bundle-delivery.s3-upload.001": {
+   "file": "specs/bundle-delivery/s3-upload/s3-upload.feature",
+   "fingerprint": "1cea117d4dba",
+   "human": false,
+   "rule": "bundle.s3.upload-to-prefix",
+   "source": "cluster-collect#BUNDLE_S3_URI",
+   "status": "inferred",
+   "test": "",
+   "tests": []
+  },
+  "bundle-delivery.s3-upload.002": {
+   "file": "specs/bundle-delivery/s3-upload/s3-upload.feature",
+   "fingerprint": "1cea117d4dba",
+   "human": false,
+   "rule": "bundle.s3.failed-upload-fails-run",
+   "source": "cluster-collect#BUNDLE_S3_URI",
+   "status": "inferred",
+   "test": "",
+   "tests": []
+  },
+  "bundle-delivery.size-budget.001": {
+   "file": "specs/bundle-delivery/size-budget/size-budget.feature",
+   "fingerprint": "dc81f3aefe6e",
+   "human": false,
+   "rule": "bundle.size-budget.truncate-largest-logs",
+   "source": "cluster-collect#MAX_BUNDLE_MB",
+   "status": "inferred",
+   "test": "",
+   "tests": []
+  },
+  "bundle-delivery.size-budget.002": {
+   "file": "specs/bundle-delivery/size-budget/bundle-size-budget.feature",
+   "fingerprint": "40939f419ddb",
+   "human": false,
+   "rule": "bundle-delivery.size-budget.largest-logs-truncated-first",
+   "source": "lib.sh#enforce_size_budget",
+   "status": "verified",
+   "test": "test-unit.sh#dir_size_bytes / enforce_size_budget",
+   "tests": [
+    "test-unit.sh#dir_size_bytes / enforce_size_budget"
+   ]
+  },
+  "bundle-delivery.size-budget.003": {
+   "file": "specs/bundle-delivery/size-budget/bundle-size-budget.feature",
+   "fingerprint": "40939f419ddb",
+   "human": false,
+   "rule": "bundle-delivery.size-budget.no-truncation-when-within-budget",
+   "source": "lib.sh#enforce_size_budget",
+   "status": "verified",
+   "test": "test-unit.sh#dir_size_bytes / enforce_size_budget",
+   "tests": [
+    "test-unit.sh#dir_size_bytes / enforce_size_budget"
+   ]
+  },
+  "bundle-delivery.size-budget.004": {
+   "file": "specs/bundle-delivery/size-budget/bundle-size-budget.feature",
+   "fingerprint": "40939f419ddb",
+   "human": false,
+   "rule": "bundle-delivery.size-budget.only-container-logs-truncated",
+   "source": "lib.sh#enforce_size_budget",
+   "status": "inferred",
+   "test": "",
+   "tests": []
+  },
+  "cluster-snapshot.cluster-overview.001": {
+   "file": "specs/cluster-snapshot/cluster-overview/cluster-overview.feature",
+   "fingerprint": "5640ecc3b805",
+   "human": false,
+   "rule": "snapshot.overview.cluster-wide-files",
+   "source": "cluster-collect#cluster-level snapshot",
+   "status": "inferred",
+   "test": "",
+   "tests": []
+  },
+  "cluster-snapshot.container-logs.001": {
+   "file": "specs/cluster-snapshot/container-logs/container-logs.feature",
+   "fingerprint": "00b5cc3faba8",
+   "human": false,
+   "rule": "snapshot.logs.bounded-by-tail-and-window",
+   "source": "cluster-collect#LOG_TAIL_LINES",
+   "status": "inferred",
+   "test": "",
+   "tests": []
+  },
+  "cluster-snapshot.container-logs.002": {
+   "file": "specs/cluster-snapshot/container-logs/container-logs.feature",
+   "fingerprint": "549b0ee0b4e2",
+   "human": false,
+   "rule": "snapshot.logs.previous-crash-when-present",
+   "source": "cluster-collect#INCLUDE_PREVIOUS",
+   "status": "inferred",
+   "test": "",
+   "tests": []
+  },
+  "cluster-snapshot.graceful-degradation.001": {
+   "file": "specs/cluster-snapshot/graceful-degradation/graceful-degradation.feature",
+   "fingerprint": "5640ecc3b805",
+   "human": false,
+   "rule": "snapshot.degradation.bundle-without-cluster",
+   "source": "cluster-collect#cluster-level snapshot",
+   "status": "inferred",
+   "test": "",
+   "tests": []
+  },
+  "cluster-snapshot.graceful-degradation.002": {
+   "file": "specs/cluster-snapshot/graceful-degradation/graceful-degradation.feature",
+   "fingerprint": "1f3e2fbccecf",
+   "human": false,
+   "rule": "snapshot.degradation.namespace-discovery-failure-aborts",
+   "source": "cluster-collect#NAMESPACES",
+   "status": "inferred",
+   "test": "",
+   "tests": []
+  },
+  "cluster-snapshot.namespace-scope.001": {
+   "file": "specs/cluster-snapshot/namespace-scope/namespace-scope.feature",
+   "fingerprint": "1f3e2fbccecf",
+   "human": false,
+   "rule": "snapshot.namespaces.arguments-override-config",
+   "source": "cluster-collect#NAMESPACES",
+   "status": "inferred",
+   "test": "",
+   "tests": []
+  },
+  "cluster-snapshot.namespace-scope.002": {
+   "file": "specs/cluster-snapshot/namespace-scope/namespace-scope.feature",
+   "fingerprint": "1f3e2fbccecf",
+   "human": false,
+   "rule": "snapshot.namespaces.default-all",
+   "source": "cluster-collect#NAMESPACES",
+   "status": "inferred",
+   "test": "",
+   "tests": []
+  },
+  "data-protection.secret-redaction.001": {
+   "file": "specs/data-protection/secret-redaction/secret-redaction.feature",
+   "fingerprint": "ca7939f28a4f",
+   "human": false,
+   "rule": "data-protection.redaction.on-by-default",
+   "source": "cluster-collect#dump",
+   "status": "inferred",
+   "test": "",
+   "tests": []
+  },
+  "data-protection.secret-redaction.002": {
+   "file": "specs/data-protection/secret-redaction/secret-value-redaction.feature",
+   "fingerprint": "9b0aa179d709",
+   "human": false,
+   "rule": "data-protection.redaction.secret-named-values-masked",
+   "source": "lib.sh#redact_stream",
+   "status": "verified",
+   "test": "test-unit.sh#redact_stream: inline \"KEY: value\" form",
+   "tests": [
+    "test-unit.sh#redact_stream: inline \"KEY: value\" form",
+    "test-unit.sh#redact_stream: YAML \"- name: KEY\" / \"value: VAL\" form"
+   ]
+  },
+  "data-protection.secret-redaction.003": {
+   "file": "specs/data-protection/secret-redaction/secret-value-redaction.feature",
+   "fingerprint": "9b0aa179d709",
+   "human": false,
+   "rule": "data-protection.redaction.unlisted-secret-names-kept",
+   "source": "lib.sh#redact_stream",
+   "status": "inferred",
+   "test": "",
+   "tests": []
+  },
+  "data-protection.secret-redaction.004": {
+   "file": "specs/data-protection/secret-redaction/secret-value-redaction.feature",
+   "fingerprint": "9b0aa179d709",
+   "human": false,
+   "rule": "data-protection.redaction.multiline-values-masked-first-line-only",
+   "source": "lib.sh#redact_stream",
+   "status": "inferred",
+   "test": "",
+   "tests": []
+  },
+  "data-protection.secret-redaction.005": {
+   "file": "specs/data-protection/secret-redaction/secret-value-redaction.feature",
+   "fingerprint": "9b0aa179d709",
+   "human": false,
+   "rule": "data-protection.redaction.secret-named-fields-masked",
+   "source": "lib.sh#redact_stream",
+   "status": "inferred",
+   "test": "",
+   "tests": []
+  },
+  "developer-tooling.unit-tests.001": {
+   "file": "specs/developer-tooling/unit-tests/unit-test-suite.feature",
+   "fingerprint": "af008149c05c",
+   "human": false,
+   "rule": "devtooling.unit-tests.run-without-cluster-or-docker",
+   "source": "Makefile#test-unit",
+   "status": "inferred",
+   "test": "",
+   "tests": []
+  },
+  "developer-tooling.unit-tests.002": {
+   "file": "specs/developer-tooling/unit-tests/unit-test-suite.feature",
+   "fingerprint": "f2fdc52fca53",
+   "human": false,
+   "rule": "devtooling.unit-tests.first-failure-stops-run",
+   "source": "test-unit.sh#fail",
+   "status": "inferred",
+   "test": "",
+   "tests": []
+  },
+  "developer-tooling.unit-tests.003": {
+   "file": "specs/developer-tooling/unit-tests/unit-test-suite.feature",
+   "fingerprint": "49b27f0eb25e",
+   "human": false,
+   "rule": "devtooling.unit-tests.scratch-files-cleanup",
+   "source": "test-unit.sh",
+   "status": "inferred",
+   "test": "",
+   "tests": []
+  },
+  "distribution.container-image.001": {
+   "file": "specs/distribution/container-image/container-image.feature",
+   "fingerprint": "1da19dd9d0df",
+   "human": false,
+   "rule": "distribution.container-image.collector-is-entry-point",
+   "source": "Dockerfile#ENTRYPOINT",
+   "status": "inferred",
+   "test": "",
+   "tests": []
+  },
+  "distribution.container-image.002": {
+   "file": "specs/distribution/container-image/container-image.feature",
+   "fingerprint": "981f0d5987a6",
+   "human": false,
+   "rule": "distribution.container-image.runs-as-non-root",
+   "source": "Dockerfile#USER",
+   "status": "inferred",
+   "test": "",
+   "tests": []
+  },
+  "distribution.container-image.003": {
+   "file": "specs/distribution/container-image/container-image.feature",
+   "fingerprint": "880e9fe67535",
+   "human": false,
+   "rule": "distribution.container-image.bundled-tooling",
+   "source": "Dockerfile#RUN apk add",
+   "status": "inferred",
+   "test": "",
+   "tests": []
+  },
+  "distribution.container-image.004": {
+   "file": "specs/distribution/container-image/container-image.feature",
+   "fingerprint": "6870e2404209",
+   "human": false,
+   "rule": "distribution.container-image.verified-kubectl",
+   "source": "Dockerfile#fetch",
+   "status": "inferred",
+   "test": "",
+   "tests": []
+  },
+  "distribution.one-line-installer.001": {
+   "file": "specs/distribution/one-line-installer/one-line-installer.feature",
+   "fingerprint": "59327e16ee9e",
+   "human": false,
+   "rule": "distribution.installer.pulls-latest-published-image",
+   "source": "install.sh#IMAGE",
+   "status": "inferred",
+   "test": "",
+   "tests": []
+  },
+  "distribution.one-line-installer.002": {
+   "file": "specs/distribution/one-line-installer/one-line-installer.feature",
+   "fingerprint": "59327e16ee9e",
+   "human": false,
+   "rule": "distribution.installer.prints-run-options",
+   "source": "install.sh#IMAGE",
+   "status": "inferred",
+   "test": "",
+   "tests": []
+  },
+  "distribution.one-line-installer.003": {
+   "file": "specs/distribution/one-line-installer/one-line-installer.feature",
+   "fingerprint": "59327e16ee9e",
+   "human": false,
+   "rule": "distribution.installer.stops-when-image-unavailable",
+   "source": "install.sh#IMAGE",
+   "status": "inferred",
+   "test": "",
+   "tests": []
+  },
+  "running-the-collector.laptop-wrapper.001": {
+   "file": "specs/running-the-collector/laptop-wrapper/laptop-wrapper.feature",
+   "fingerprint": "f4091fa25bbe",
+   "human": false,
+   "rule": "collector.laptop-wrapper.dry-run-prints-without-running",
+   "source": "docker-collect.sh#DRY_RUN",
+   "status": "inferred",
+   "test": "",
+   "tests": []
+  },
+  "running-the-collector.laptop-wrapper.002": {
+   "file": "specs/running-the-collector/laptop-wrapper/laptop-wrapper.feature",
+   "fingerprint": "6e156ea2c140",
+   "human": false,
+   "rule": "collector.laptop-wrapper.bundle-written-to-host-dir-as-operator",
+   "source": "docker-collect.sh#OUTPUT_DIR",
+   "status": "inferred",
+   "test": "",
+   "tests": []
+  },
+  "running-the-collector.laptop-wrapper.003": {
+   "file": "specs/running-the-collector/laptop-wrapper/laptop-wrapper.feature",
+   "fingerprint": "a44df24d4057",
+   "human": false,
+   "rule": "collector.laptop-wrapper.uses-current-kubeconfig-read-only",
+   "source": "docker-collect.sh#KUBECONFIG_PATH",
+   "status": "inferred",
+   "test": "",
+   "tests": []
+  },
+  "running-the-collector.laptop-wrapper.004": {
+   "file": "specs/running-the-collector/laptop-wrapper/laptop-wrapper.feature",
+   "fingerprint": "498a3a9ac15f",
+   "human": false,
+   "rule": "collector.laptop-wrapper.s3-upload-with-local-aws-credentials",
+   "source": "docker-collect.sh#S3_URI",
+   "status": "inferred",
+   "test": "",
+   "tests": []
+  },
+  "running-the-collector.laptop-wrapper.005": {
+   "file": "specs/running-the-collector/laptop-wrapper/laptop-wrapper.feature",
+   "fingerprint": "9d140987a6ac",
+   "human": false,
+   "rule": "collector.laptop-wrapper.image-and-tag-selection",
+   "source": "docker-collect.sh#IMAGE",
+   "status": "inferred",
+   "test": "",
+   "tests": []
+  },
+  "running-the-collector.laptop-wrapper.006": {
+   "file": "specs/running-the-collector/laptop-wrapper/laptop-wrapper.feature",
+   "fingerprint": "13cd2732febf",
+   "human": false,
+   "rule": "collector.laptop-wrapper.passes-settings-and-namespaces",
+   "source": "docker-collect.sh#ENV_VARS",
+   "status": "inferred",
+   "test": "",
+   "tests": []
+  },
+  "running-the-collector.local-cluster-connectivity.001": {
+   "file": "specs/running-the-collector/local-cluster-connectivity/local-cluster-connectivity.feature",
+   "fingerprint": "e34fe3bbf778",
+   "human": false,
+   "rule": "collector.local-connectivity.mount-referenced-cert-dirs",
+   "source": "docker-collect.sh#add_mount_dir",
+   "status": "inferred",
+   "test": "",
+   "tests": []
+  },
+  "running-the-collector.local-cluster-connectivity.002": {
+   "file": "specs/running-the-collector/local-cluster-connectivity/local-cluster-connectivity.feature",
+   "fingerprint": "e556854d6f80",
+   "human": false,
+   "rule": "collector.local-connectivity.join-api-server-docker-network",
+   "source": "docker-collect.sh#NETWORK",
+   "status": "inferred",
+   "test": "",
+   "tests": []
+  },
+  "running-the-collector.wrapper-exit-codes.001": {
+   "file": "specs/running-the-collector/wrapper-exit-codes/wrapper-exit-codes.feature",
+   "fingerprint": "09a283e2fa21",
+   "human": false,
+   "rule": "collector.wrapper-exit-codes.distinct-refusal-codes",
+   "source": "docker-collect.sh#die",
+   "status": "inferred",
+   "test": "",
+   "tests": []
+  },
+  "running-the-collector.wrapper-exit-codes.002": {
+   "file": "specs/running-the-collector/wrapper-exit-codes/wrapper-exit-codes.feature",
+   "fingerprint": "6e156ea2c140",
+   "human": false,
+   "rule": "collector.wrapper-exit-codes.missing-option-value",
+   "source": "docker-collect.sh#OUTPUT_DIR",
+   "status": "inferred",
+   "test": "",
+   "tests": []
+  }
+ },
+ "taxonomy": {
+  "domains": [
+   {
+    "areas": [
+     {
+      "description": "Cluster-wide facts: server version, nodes and node descriptions, all pods, API resources and time-sorted events.",
+      "slug": "cluster-overview",
+      "title": "Cluster overview"
+     },
+     {
+      "description": "Per-namespace resource listings and describes, with secret names listed but never their contents.",
+      "slug": "namespace-resources",
+      "title": "Namespace resources"
+     },
+     {
+      "description": "Per-container current and previous-crash logs, bounded by tail-line count and an optional time window.",
+      "slug": "container-logs",
+      "title": "Container logs"
+     },
+     {
+      "description": "Node and pod CPU/memory figures from kubectl top, captured when metrics are available.",
+      "slug": "resource-usage",
+      "title": "Resource usage"
+     },
+     {
+      "description": "Choosing which namespaces to collect, from arguments or configuration, defaulting to all of them.",
+      "slug": "namespace-scope",
+      "title": "Namespace scope"
+     },
+     {
+      "description": "Collection keeps going and still produces a bundle when commands fail or no cluster is reachable.",
+      "slug": "graceful-degradation",
+      "title": "Graceful degradation"
+     }
+    ],
+    "description": "What the collector captures from a Kubernetes cluster to describe the state at incident time.",
+    "slug": "cluster-snapshot",
+    "title": "Cluster Snapshot"
+   },
+   {
+    "areas": [
+     {
+      "description": "Masking secret-like environment variable values in describe and resource dumps, on by default and switchable.",
+      "slug": "secret-redaction",
+      "title": "Secret value redaction"
+     },
+     {
+      "description": "Guarantee that only secret names, never secret data, end up in the bundle.",
+      "slug": "secret-exclusion",
+      "title": "Secret data exclusion"
+     }
+    ],
+    "description": "Keeping sensitive values out of the support bundle.",
+    "slug": "data-protection",
+    "title": "Data Protection"
+   },
+   {
+    "areas": [
+     {
+      "description": "Packaging the collection into a UTC-timestamped tarball in a configurable output directory.",
+      "slug": "bundle-archive",
+      "title": "Bundle archive"
+     },
+     {
+      "description": "Capping bundle size by truncating the largest logs first while keeping their most recent lines.",
+      "slug": "size-budget",
+      "title": "Size budget"
+     },
+     {
+      "description": "Optionally shipping the finished bundle to an s3://bucket/prefix location.",
+      "slug": "s3-upload",
+      "title": "S3 upload"
+     }
+    ],
+    "description": "Turning the collected files into a shareable artifact and getting it where it needs to go.",
+    "slug": "bundle-delivery",
+    "title": "Bundle Packaging & Delivery"
+   },
+   {
+    "areas": [
+     {
+      "description": "Running a one-shot Kubernetes Job with narrowly scoped read-only permissions.",
+      "slug": "in-cluster-job",
+      "title": "In-cluster job"
+     },
+     {
+      "description": "Deploying the collector job through a Helm chart with default values.",
+      "slug": "helm-chart",
+      "title": "Helm chart"
+     },
+     {
+      "description": "One command that runs the container image against the current kubectl context, with options for output, S3, image, extra settings and dry run.",
+      "slug": "laptop-wrapper",
+      "title": "Laptop wrapper"
+     },
+     {
+      "description": "Auto-mounting kubeconfig certificate files and joining the docker network of minikube, kind or k3d clusters.",
+      "slug": "local-cluster-connectivity",
+      "title": "Local cluster connectivity"
+     },
+     {
+      "description": "Distinct, sysexits-style exit codes so callers can tell bad usage from a missing kubeconfig.",
+      "slug": "wrapper-exit-codes",
+      "title": "Wrapper errors and exit codes"
+     }
+    ],
+    "description": "The ways an operator launches a collection against a cluster.",
+    "slug": "running-the-collector",
+    "title": "Running the Collector"
+   },
+   {
+    "areas": [
+     {
+      "description": "Minimal Alpine image with pinned tooling and the collector as its entry point.",
+      "slug": "container-image",
+      "title": "Container image"
+     },
+     {
+      "description": "curl-pipe installer that puts the script in a bin directory and its helper library under lib.",
+      "slug": "one-line-installer",
+      "title": "One-line installer"
+     },
+     {
+      "description": "Pushing single-arch and multi-arch release images, including the latest tag.",
+      "slug": "image-publishing",
+      "title": "Image publishing"
+     }
+    ],
+    "description": "How users obtain the collector.",
+    "slug": "distribution",
+    "title": "Distribution & Installation"
+   },
+   {
+    "areas": [
+     {
+      "description": "Make targets for setup, building, linting, testing and releasing, with a help listing.",
+      "slug": "build-and-tasks",
+      "title": "Build and task runner"
+     },
+     {
+      "description": "Shell and Dockerfile linting and the pre-commit hook that CI also runs.",
+      "slug": "linting",
+      "title": "Linting and hooks"
+     },
+     {
+      "description": "End-to-end check that the image has its tools and still produces a bundle without a cluster.",
+      "slug": "smoke-tests",
+      "title": "Smoke tests"
+     },
+     {
+      "description": "Tests of redaction, size budgeting and the laptop wrapper's dry run and exit codes, needing no cluster or docker.",
+      "slug": "unit-tests",
+      "title": "Unit tests"
+     },
+     {
+      "description": "Rendering the Helm chart with default values and failing on any template error.",
+      "slug": "chart-validation",
+      "title": "Chart validation"
+     },
+     {
+      "description": "Visual styling for the project's documentation website.",
+      "slug": "docs-site",
+      "title": "Documentation site"
+     }
+    ],
+    "description": "Build, quality checks and docs that support people working on the project.",
+    "slug": "developer-tooling",
+    "title": "Developer Tooling"
+   }
+  ]
+ }
+}
