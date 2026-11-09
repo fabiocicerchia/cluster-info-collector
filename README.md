@@ -1,5 +1,12 @@
 # cluster-info-collector
 
+> [!WARNING]
+> **This project is retired** and no longer maintained. If you need something
+> for this, [crust-gather](https://github.com/crust-gather/crust-gather)
+> collects full or partial cluster state as a kubectl plugin and can serve it
+> back through an API server. It is a separate project, actively developed, and
+> worth a look.
+
 [![CI](https://github.com/fabiocicerchia/cluster-info-collector/actions/workflows/ci.yml/badge.svg)](https://github.com/fabiocicerchia/cluster-info-collector/actions/workflows/ci.yml)
 [![Security](https://github.com/fabiocicerchia/cluster-info-collector/actions/workflows/security.yml/badge.svg)](https://github.com/fabiocicerchia/cluster-info-collector/actions/workflows/security.yml)
 [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/fabiocicerchia/cluster-info-collector/badge)](https://securityscorecards.dev/viewer/?uri=github.com/fabiocicerchia/cluster-info-collector)
